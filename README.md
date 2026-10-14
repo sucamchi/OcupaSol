@@ -87,7 +87,7 @@ proyectoIABD/
 
 | Columna | Descripción |
 |---|---|
-| `fecha`, `añp`, `mes` | Periodo mensual (AAAA-MM) |
+| `fecha`, `año`, `mes` | Periodo mensual (AAAA-MM) |
 | `zona` | Costa del Sol (total) o municipio |
 | `ocupacion_plazas` | Grado de ocupación por plazas (%) — **variable a predecir** |
 | `ocupacion_habitaciones` | Grado de ocupación por habitaciones (%) |
