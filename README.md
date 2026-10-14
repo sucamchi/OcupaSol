@@ -1,4 +1,4 @@
-# ☀ SolOcupa — Predictor de ocupación hotelera en la Costa del Sol
+# ☀ OcupaSol — Predictor de ocupación hotelera en la Costa del Sol
 
 Aplicación web (`.html`) que predice el grado de ocupación hotelera de los próximos 12 meses en la Costa del Sol
 y en sus principales municipios, para ayudar a los hoteles a planificar personal, precios y campañas.
@@ -12,7 +12,7 @@ y en sus principales municipios, para ayudar a los hoteles a planificar personal
 
 | Apartado | Definición |
 |---|---|
-| **Título** | **SolOcupa** — Predictor de ocupación hotelera para la Costa del Sol |
+| **Título** | **OcupaSol** — Predictor de ocupación hotelera para la Costa del Sol |
 | **1. Sector o industria** | Turismo / HORECA (hostelería) |
 | **2. Proceso a mejorar** | **Toma de decisiones** y **análisis de datos (predicciones)**. Hoy muchos hoteles planifican plantilla, tarifas y promociones "a ojo" o copiando el año anterior. La app anticipa la demanda de la zona para decidir con datos. |
 | **3. Fuentes de datos** | **INE — Encuesta de Ocupación Hotelera (EOH)**, datos oficiales mensuales y públicos:<br>• Tabla 2013: establecimientos, plazas, grados de ocupación y personal por **zonas turísticas**<br>• Tabla 2039: viajeros y pernoctaciones por **zonas turísticas**<br>• Tabla 2076: establecimientos, plazas, ocupación y personal por **puntos turísticos** (municipios)<br>• Tabla 2078: viajeros y pernoctaciones por **puntos turísticos**<br>**Dataset creado:** `data/ocupacion_costa_del_sol.csv` con **2.035 registros mensuales** (1999–2026) de la Costa del Sol y 7 municipios (Málaga, Torremolinos, Benalmádena, Fuengirola, Marbella, Estepona y Nerja), 14 variables cada uno. |
