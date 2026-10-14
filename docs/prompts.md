@@ -9,10 +9,27 @@ La entrega final pide documentar el proceso: idea, prompts, iteraciones y mejora
 **Herramienta:** Claude Code (agente de IA)
 **Fecha:** 14/10/2026
 
-### Prompt
+### Prompts (tal como se escribieron)
 
-> Crea la ficha de la Fase 1 en el README y empieza a desarrollar la aplicación en HTML con sus archivos necesarios
-> en el repositorio. Idea: predictor de ocupación hotelera para empresas de la Costa del Sol.
+**Prompt 1 — Elección de la idea (Fase 1)**
+
+> tenemos que realziar un proyecto para nuestro curso de big data y programacion en IA con la siguientes pautas @"Módulo 5_1 - PROYECTO.pptx" y tenemos tres ideas: un predictor de ocupancia hotelera para empresas en la costa del sol, un chat bot para resolver dudas que pueda tener el estudiante sobre el temario de Programación en Inteligencia Artificial y Big Data aplicables en entornos 5G 98/2024/LJ/0001 29-0047 (el curso que estamos haciendo) y una aplicacion para personas de vision reducida que la ia peuda detectar e identificar obstaculos y avisar al usuario, segun las pautas del proyecto, que idea seria mas factible y sencillo implementar?
+
+**Prompt 2 — Ficha de la Fase 1 y creación de la app**
+
+> creame creame la ficha de la fase 1 en el readme y empieza a desarrollar la aplicacion en html con sus archivos necesarios en mi repositorio de github @proyectoIABD\ ponte al lio
+
+**Prompt 3 — Investigación previa (benchmarking, Fase 2)**
+
+> naa olvidalo, vamos a dejarlo sencillo, en la fase 2 necesitamos que compruebes si ya existen esta aplicacion o similares para que podamos mirarlas y ver que podemos mejorar
+
+**Prompt 4 — Correcciones de nombre y columna**
+
+> OcupaSol es el nombre correcto, se escribe "año", corrije todo y vuelve a subirlo
+
+**Prompt 5 — Publicación**
+
+> puedes activar github pages para OcupaSol?
 
 ### Resultado
 
