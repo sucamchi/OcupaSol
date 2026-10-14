@@ -40,9 +40,9 @@ Si un hotel se equivoca al prever la demanda:
 
 | Integrante | Rol principal | Responsabilidades |
 |---|---|---|
-| _Nombre 1_ | Datos y modelo | Dataset INE, limpieza, modelo predictivo, validación |
-| _Nombre 2_ | Desarrollo y diseño | Prompts, interfaz HTML/CSS/JS, gráficos, usabilidad |
-| _Nombre 3_ | Testing y documentación | Pruebas, registro de errores, documentación, presentación |
+| Susana | Datos y modelo | Dataset INE, limpieza, modelo predictivo, validación |
+| Mabel | Desarrollo y diseño | Prompts, interfaz HTML/CSS/JS, gráficos, usabilidad |
+| Marta | Testing y documentación | Pruebas, registro de errores, documentación, presentación |
 
 ---
 
@@ -87,7 +87,7 @@ proyectoIABD/
 
 | Columna | Descripción |
 |---|---|
-| `fecha`, `anio`, `mes` | Periodo mensual (AAAA-MM) |
+| `fecha`, `añp`, `mes` | Periodo mensual (AAAA-MM) |
 | `zona` | Costa del Sol (total) o municipio |
 | `ocupacion_plazas` | Grado de ocupación por plazas (%) — **variable a predecir** |
 | `ocupacion_habitaciones` | Grado de ocupación por habitaciones (%) |
