@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SolOcupa · Predictor de ocupación hotelera</title>
+  <meta name="description" content="Predicción de la ocupación hotelera en la Costa del Sol con datos del INE.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="cabecera">
+    <div class="marca">
+      <span class="logo" aria-hidden="true">☀</span>
+      <div>
+        <h1>SolOcupa</h1>
+        <p class="subtitulo">Predictor de ocupación hotelera · Costa del Sol</p>
+      </div>
+    </div>
+    <nav class="pestanas" role="tablist" aria-label="Secciones">
+      <button role="tab" class="pestana activa" aria-selected="true" data-tab="panel">Panel</button>
+      <button role="tab" class="pestana" aria-selected="false" data-tab="prediccion">Predicción</button>
+      <button role="tab" class="pestana" aria-selected="false" data-tab="datos">Datos</button>
+      <button role="tab" class="pestana" aria-selected="false" data-tab="acerca">Acerca de</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="barra-zona">
+      <label for="zona">Zona</label>
+      <select id="zona"></select>
+      <span class="nota" id="nota-datos"></span>
+    </div>
+
+    <!-- PANEL -->
+    <section id="tab-panel" class="seccion" role="tabpanel">
+      <div class="kpis" id="kpis"></div>
+
+      <div class="tarjeta">
+        <div class="tarjeta-cab">
+          <h2>Evolución de la ocupación por plazas</h2>
+          <div class="segmentado" id="rango-historico" role="group" aria-label="Periodo">
+            <button data-anios="3" class="activo">3 años</button>
+            <button data-anios="10">10 años</button>
+            <button data-anios="0">Todo</button>
+          </div>
+        </div>
+        <div class="grafico alto"><canvas id="graf-historico"></canvas></div>
+      </div>
+
+      <div class="rejilla-2">
+        <div class="tarjeta">
+          <h2>Comparativa de municipios <small>(media últimos 12 meses)</small></h2>
+          <div class="grafico"><canvas id="graf-municipios"></canvas></div>
+        </div>
+        <div class="tarjeta">
+          <h2>Origen de las pernoctaciones <small>(últimos 12 meses)</small></h2>
+          <div class="grafico"><canvas id="graf-origen"></canvas></div>
+        </div>
+      </div>
+
+      <div class="tarjeta">
+        <h2>Mapa de estacionalidad <small>(% ocupación por plazas)</small></h2>
+        <div class="tabla-scroll"><table class="mapa-calor" id="mapa-calor"></table></div>
+      </div>
+    </section>
+
+    <!-- PREDICCIÓN -->
+    <section id="tab-prediccion" class="seccion" role="tabpanel" hidden>
+      <div class="rejilla-pred">
+        <form class="tarjeta formulario" id="form-prediccion" novalidate>
+          <h2>Tu hotel</h2>
+          <label for="mes-objetivo">Mes a predecir</label>
+          <select id="mes-objetivo" required></select>
+
+          <label for="plazas-hotel">Plazas (camas) de tu hotel</label>
+          <input id="plazas-hotel" type="number" min="1" max="5000" step="1" value="200" required>
+
+          <label for="precio-medio">Precio medio actual por habitación/noche (€) <span class="opcional">opcional</span></label>
+          <input id="precio-medio" type="number" min="0" max="5000" step="1" placeholder="Ej. 120">
+
+          <p class="error" id="error-form" role="alert"></p>
+          <button type="submit" class="boton">Calcular predicción</button>
+        </form>
+
+        <div class="tarjeta resultado" id="resultado" aria-live="polite">
+          <p class="vacio">Rellena el formulario para ver la predicción.</p>
+        </div>
+      </div>
+
+      <div class="tarjeta">
+        <h2>Predicción de los próximos 12 meses</h2>
+        <div class="grafico alto"><canvas id="graf-prediccion"></canvas></div>
+      </div>
+
+      <div class="tarjeta">
+        <div class="tarjeta-cab">
+          <h2>¿Es fiable el modelo?</h2>
+        </div>
+        <p class="explicacion">
+          Validación (<em>backtesting</em>): entrenamos el modelo sin los últimos 12 meses, predecimos esos meses
+          y comparamos con lo que pasó de verdad. Lo repetimos con 3 años distintos y lo comparamos con la
+          referencia más simple: "este mes será igual que el mismo mes del año pasado".
+        </p>
+        <div class="kpis" id="kpis-modelo"></div>
+        <div class="grafico"><canvas id="graf-validacion"></canvas></div>
+      </div>
+    </section>
+
+    <!-- DATOS -->
+    <section id="tab-datos" class="seccion" role="tabpanel" hidden>
+      <div class="tarjeta">
+        <div class="tarjeta-cab">
+          <h2>Dataset</h2>
+          <a class="boton secundario" href="data/ocupacion_costa_del_sol.csv" download>Descargar CSV</a>
+        </div>
+        <p class="explicacion" id="resumen-dataset"></p>
+        <div class="filtros">
+          <label for="filtro-anio">Año</label>
+          <select id="filtro-anio"></select>
+        </div>
+        <div class="tabla-scroll"><table class="tabla" id="tabla-datos"></table></div>
+      </div>
+    </section>
+
+    <!-- ACERCA -->
+    <section id="tab-acerca" class="seccion" role="tabpanel" hidden>
+      <div class="tarjeta texto">
+        <h2>Sobre SolOcupa</h2>
+        <p>
+          Herramienta B2B para hoteles de la Costa del Sol: predice el grado de ocupación de los próximos meses
+          para ayudar a planificar <strong>personal</strong>, <strong>precios</strong> y <strong>campañas</strong>.
+        </p>
+        <h3>Datos</h3>
+        <p>
+          Instituto Nacional de Estadística (INE), <em>Encuesta de Ocupación Hotelera</em>: tablas 2013 y 2039
+          (zonas turísticas) y 2076 y 2078 (puntos turísticos). Datos mensuales oficiales desde 1999.
+        </p>
+        <h3>Modelo</h3>
+        <p>
+          Regresión lineal regularizada (ridge) que parte del mismo mes del año anterior y aprende a corregirlo
+          con la tendencia reciente. Se entrena por separado para cada zona y se excluyen los meses de la COVID
+          (mar-2020 a dic-2021). El intervalo que acompaña a cada predicción sale del error medido en la validación.
+        </p>
+        <h3>Limitaciones</h3>
+        <ul>
+          <li>Predice la media de la zona, no la de un hotel concreto: tu categoría, ubicación y precio influyen.</li>
+          <li>No conoce eventos futuros (congresos, crisis, cambios de vuelos). Úsala como apoyo, no como verdad absoluta.</li>
+          <li>Los datos del INE se publican con un mes y medio de retraso aproximadamente.</li>
+        </ul>
+        <p class="nota">Proyecto del curso <em>Programación en Inteligencia Artificial y Big Data aplicables en entornos 5G</em> (98/2024/LJ/0001 29-0047).</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">Fuente de datos: INE · Encuesta de Ocupación Hotelera</footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="data/dataset.js"></script>
+  <script src="js/model.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
