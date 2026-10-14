@@ -205,7 +205,7 @@
   function pintarMapaCalor(zona) {
     const regs = registrosZona(zona);
     const porFecha = new Map(regs.map((r) => [r.fecha, r.ocupacion_plazas]));
-    const anios = [...new Set(regs.map((r) => r.anio))].sort((a, b) => b - a);
+    const anios = [...new Set(regs.map((r) => r.año))].sort((a, b) => b - a);
     let html = `<thead><tr><th></th>${MESES.map((m) => `<th>${m}</th>`).join("")}</tr></thead><tbody>`;
     for (const a of anios) {
       html += `<tr><th>${a}</th>`;
@@ -401,7 +401,7 @@
   ];
 
   function iniciarDatos() {
-    const anios = [...new Set(DATOS.map((r) => r.anio))].sort((a, b) => b - a);
+    const anios = [...new Set(DATOS.map((r) => r.año))].sort((a, b) => b - a);
     $("#filtro-anio").innerHTML = `<option value="">Todos</option>` + anios.map((a) => `<option>${a}</option>`).join("");
     $("#filtro-anio").value = String(anios[0]);
     $("#filtro-anio").addEventListener("change", () => pintarTabla($("#zona").value));
@@ -413,7 +413,7 @@
 
   function pintarTabla(zona) {
     const anio = $("#filtro-anio").value;
-    const filas = registrosZona(zona).filter((r) => !anio || String(r.anio) === anio).reverse();
+    const filas = registrosZona(zona).filter((r) => !anio || String(r.año) === anio).reverse();
     const cab = `<thead><tr>${COLUMNAS_TABLA.map(([, t]) => `<th>${t}</th>`).join("")}</tr></thead>`;
     const cuerpo = filas.map((r) => `<tr>${COLUMNAS_TABLA.map(([k, , d]) =>
       `<td>${typeof r[k] === "number" ? fmt(r[k], d) : esc(r[k] ?? "–")}</td>`).join("")}</tr>`).join("");

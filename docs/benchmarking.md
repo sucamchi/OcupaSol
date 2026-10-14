@@ -1,6 +1,6 @@
 # Fase 2 — Investigación previa (benchmarking)
 
-Objetivo: ver qué aplicaciones o servicios parecidos a SolOcupa existen, qué hacen bien y qué podemos aportar o mejorar.
+Objetivo: ver qué aplicaciones o servicios parecidos a OcupaSol existen, qué hacen bien y qué podemos aportar o mejorar.
 
 > Búsqueda realizada el 14/10/2026. Precios y funciones según webs comerciales y comparadores: conviene confirmarlos en la web de cada producto.
 
@@ -33,15 +33,15 @@ Son las herramientas profesionales que usan los hoteles para predecir la demanda
 
 ## 3. Proyectos académicos y de código abierto
 
-| Proyecto | Qué hace | Diferencia con SolOcupa |
+| Proyecto | Qué hace | Diferencia con OcupaSol |
 |---|---|---|
 | **Kaggle "Hotel Booking Demand"** (119.000 reservas de un hotel urbano y un hotel de playa en Portugal) | Casi todos los proyectos con este dataset predicen **cancelaciones** (por ejemplo, con regresión logística). Algunos predicen ingresos diarios. | Son cuadernos (*notebooks*), no aplicaciones para un usuario final, y usan datos de Portugal, no de la Costa del Sol. |
 
 ---
 
-## 4. Huecos que hemos detectado y cómo los cubre SolOcupa
+## 4. Huecos que hemos detectado y cómo los cubre OcupaSol
 
-| Lo que falta en el mercado | Qué aporta SolOcupa |
+| Lo que falta en el mercado | Qué aporta OcupaSol |
 |---|---|
 | Las herramientas buenas son de pago y cerradas | **Gratuita y transparente**: muestra el error real del modelo y lo compara con la referencia simple |
 | Las previsiones de AEHCOS son notas de prensa sin histórico | **Panel interactivo** con el histórico desde 1999, la comparativa de municipios y la estacionalidad |

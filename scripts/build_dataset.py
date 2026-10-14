@@ -45,7 +45,7 @@ METRICAS_VIAJ = [
     ("pernoctaciones_residentes", "Pernoctaciones.", "Residentes en España"),
     ("pernoctaciones_extranjeros", "Pernoctaciones.", "Residentes en el extranjero"),
 ]
-COLUMNAS = ["fecha", "anio", "mes", "zona"] + [m[0] for m in METRICAS_OCUP] + [m[0] for m in METRICAS_VIAJ]
+COLUMNAS = ["fecha", "año", "mes", "zona"] + [m[0] for m in METRICAS_OCUP] + [m[0] for m in METRICAS_VIAJ]
 
 
 def descargar(tabla):
@@ -116,7 +116,7 @@ def main():
         if "ocupacion_plazas" not in valores:
             continue
         anio, mes = fecha.split("-")
-        registro = {"fecha": fecha, "anio": int(anio), "mes": int(mes), "zona": zona}
+        registro = {"fecha": fecha, "año": int(anio), "mes": int(mes), "zona": zona}
         for col in COLUMNAS[4:]:
             registro[col] = valores.get(col)
         registros.append(registro)
