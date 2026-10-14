@@ -80,6 +80,7 @@ proyectoIABD/
 │   ├── ocupacion_costa_del_sol.csv # Dataset (2.035 registros, INE)
 │   └── dataset.js                  # Dataset embebido para la app
 ├── scripts/build_dataset.py        # Descarga y construcción del dataset
+├── docs/benchmarking.md            # Fase 2: aplicaciones similares y mejoras
 └── docs/prompts.md                 # Registro de prompts e iteraciones
 ```
 
@@ -115,6 +116,7 @@ Hay huecos puntuales (por ejemplo, abril–junio de 2020 por el cierre de la COV
 
 ## 🛣 Próximos pasos (Fases 2–5)
 
+- [x] Fase 2: investigación previa / benchmarking (`docs/benchmarking.md`)
 - [ ] Fase 2: documentar el prompt inicial, analizar el código generado y corregir errores (`docs/prompts.md`).
 - [ ] Fase 3: validar el MVP con un "cliente" simulado (por ejemplo, el director de un hotel de Torremolinos).
 - [ ] Fase 4: prompt optimizado (máx. 500 palabras) y mejora con Antigravity; añadir variables externas (festivos, Semana Santa, vuelos al aeropuerto de Málaga, temperatura).
