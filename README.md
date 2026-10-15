@@ -1,6 +1,8 @@
-# ☀ OcupaSol — Predictor de ocupación hotelera en la Costa del Sol
+# OcupaSol
 
-Aplicación web (`.html`) que predice el grado de ocupación hotelera de los próximos 12 meses en la Costa del Sol
+**Predictor de ocupación hotelera para la Costa del Sol**
+
+OcupaSol es una aplicación web que predice el grado de ocupación hotelera de los próximos 12 meses en la Costa del Sol
 y en sus principales municipios, para ayudar a los hoteles a planificar personal, precios y campañas.
 
 > Proyecto del Módulo 5 del curso **Programación en Inteligencia Artificial y Big Data aplicables en entornos 5G**
@@ -8,14 +10,14 @@ y en sus principales municipios, para ayudar a los hoteles a planificar personal
 
 ---
 
-## 📋 Fase 1 — Definición del proyecto
+## Fase 1: definición del proyecto
 
 | Apartado | Definición |
 |---|---|
-| **Título** | **OcupaSol** — Predictor de ocupación hotelera para la Costa del Sol |
+| **Título** | **OcupaSol**: predictor de ocupación hotelera para la Costa del Sol |
 | **1. Sector o industria** | Turismo / HORECA (hostelería) |
 | **2. Proceso a mejorar** | **Toma de decisiones** y **análisis de datos (predicciones)**. Hoy muchos hoteles planifican plantilla, tarifas y promociones "a ojo" o copiando el año anterior. La app anticipa la demanda de la zona para decidir con datos. |
-| **3. Fuentes de datos** | **INE — Encuesta de Ocupación Hotelera (EOH)**, datos oficiales mensuales y públicos:<br>• Tabla 2013: establecimientos, plazas, grados de ocupación y personal por **zonas turísticas**<br>• Tabla 2039: viajeros y pernoctaciones por **zonas turísticas**<br>• Tabla 2076: establecimientos, plazas, ocupación y personal por **puntos turísticos** (municipios)<br>• Tabla 2078: viajeros y pernoctaciones por **puntos turísticos**<br>**Dataset creado:** `data/ocupacion_costa_del_sol.csv` con **2.035 registros mensuales** (1999–2026) de la Costa del Sol y 7 municipios (Málaga, Torremolinos, Benalmádena, Fuengirola, Marbella, Estepona y Nerja), 14 variables cada uno. |
+| **3. Fuentes de datos** | **Encuesta de Ocupación Hotelera (EOH) del INE**, datos oficiales mensuales y públicos:<br>• Tabla 2013: establecimientos, plazas, grados de ocupación y personal por **zonas turísticas**<br>• Tabla 2039: viajeros y pernoctaciones por **zonas turísticas**<br>• Tabla 2076: establecimientos, plazas, ocupación y personal por **puntos turísticos** (municipios)<br>• Tabla 2078: viajeros y pernoctaciones por **puntos turísticos**<br>**Dataset creado:** `data/ocupacion_costa_del_sol.csv` con **2.035 registros mensuales** (1999–2026) de la Costa del Sol y 7 municipios (Málaga, Torremolinos, Benalmádena, Fuengirola, Marbella, Estepona y Nerja), 14 variables cada uno. |
 | **4. Usuario final** | **Empresas (B2B)**: directores de hotel, *revenue managers* y responsables de RR. HH. de hoteles de la Costa del Sol. Usuarios secundarios: analistas de turismo y administraciones públicas. |
 | **5. Capacidad de IA principal** | **Predicción (modelo supervisado)**: regresión lineal regularizada (ridge) entrenada con series temporales, que aprende cómo cambia la ocupación respecto al mismo mes del año anterior según la tendencia reciente. Se valida con *backtesting* frente a un modelo de referencia. |
 | **6. Tipo de interacción** | **Dashboard interactivo**, **formulario inteligente** y **sistema de recomendaciones**: el usuario elige zona, mes y nº de plazas de su hotel y recibe la ocupación prevista, un intervalo de confianza, las plazas ocupadas estimadas, el personal recomendado y consejos de precio y gestión. |
@@ -46,7 +48,7 @@ Si un hotel se equivoca al prever la demanda:
 
 ---
 
-## 🚀 Cómo usar la aplicación
+## Uso de la aplicación
 
 1. Clona o descarga el repositorio.
 2. Abre `index.html` en el navegador (doble clic). No hace falta servidor.
@@ -67,10 +69,10 @@ python scripts/build_dataset.py
 
 El script regenera `data/ocupacion_costa_del_sol.csv` (evidencia del dataset) y `data/dataset.js` (el mismo dataset embebido para que la app funcione sin servidor). Solo usa la librería estándar de Python.
 
-## 🗂 Estructura
+## Estructura del repositorio
 
 ```
-proyectoIABD/
+OcupaSol/
 ├── index.html                      # Aplicación web
 ├── css/styles.css                  # Estilos (modo claro y oscuro)
 ├── js/
@@ -84,13 +86,13 @@ proyectoIABD/
 └── docs/prompts.md                 # Registro de prompts e iteraciones
 ```
 
-## 📊 Dataset
+## Dataset
 
 | Columna | Descripción |
 |---|---|
 | `fecha`, `año`, `mes` | Periodo mensual (AAAA-MM) |
 | `zona` | Costa del Sol (total) o municipio |
-| `ocupacion_plazas` | Grado de ocupación por plazas (%) — **variable a predecir** |
+| `ocupacion_plazas` | Grado de ocupación por plazas (%). **Variable a predecir** |
 | `ocupacion_habitaciones` | Grado de ocupación por habitaciones (%) |
 | `ocupacion_fin_semana` | Grado de ocupación por plazas en fin de semana (%) |
 | `establecimientos`, `plazas`, `personal` | Oferta hotelera estimada y personal empleado |
@@ -99,7 +101,7 @@ proyectoIABD/
 
 Hay huecos puntuales (por ejemplo, abril–junio de 2020 por el cierre de la COVID, o meses que el INE no publica por secreto estadístico).
 
-## 🤖 Modelo
+## Modelo predictivo
 
 - **Idea:** la ocupación de un mes se parece mucho a la del mismo mes del año anterior. El modelo aprende a corregir ese valor con:
   la tendencia interanual de los últimos 3 meses, el cambio que hubo el año pasado en ese mes y la pérdida de fuerza de la tendencia cuanto más lejos se predice.
@@ -108,15 +110,15 @@ Hay huecos puntuales (por ejemplo, abril–junio de 2020 por el cierre de la COV
 - **Validación:** *backtesting* con los 3 últimos años (36 meses de prueba). Se mide el MAE en puntos porcentuales y se compara con la referencia "igual que el año pasado".
 - **Intervalo del 90 %:** ±1,645 × RMSE de la validación.
 
-## 🔒 Seguridad y fiabilidad
+## Seguridad y fiabilidad
 
 - No hay claves de API ni datos personales: todo se ejecuta en el navegador.
 - Las entradas del formulario se validan y todo el texto que se inserta en la página se escapa.
 - La app muestra el error real del modelo y sus limitaciones, para no dar una falsa sensación de precisión.
 
-## 🛣 Próximos pasos (Fases 2–5)
+## Hoja de ruta (fases 2 a 5)
 
-- [x] Fase 2: investigación previa / benchmarking (`docs/benchmarking.md`)
+- [x] Fase 2: investigación previa y benchmarking (`docs/benchmarking.md`).
 - [ ] Fase 2: documentar el prompt inicial, analizar el código generado y corregir errores (`docs/prompts.md`).
 - [ ] Fase 3: validar el MVP con un "cliente" simulado (por ejemplo, el director de un hotel de Torremolinos).
 - [ ] Fase 4: prompt optimizado (máx. 500 palabras) y mejora con Antigravity; añadir variables externas (festivos, Semana Santa, vuelos al aeropuerto de Málaga, temperatura).
