@@ -12,6 +12,8 @@
   --bajo: #c0392b;
   --sombra: 0 1px 2px rgba(16, 24, 40, 0.06);
   --radio: 10px;
+  /* Capa encima de la foto de fondo para que el texto se lea bien */
+  --velo: rgba(246, 247, 249, 0.82);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,6 +30,7 @@
     --medio: #e3a33a;
     --bajo: #ec6a5c;
     --sombra: none;
+    --velo: rgba(18, 22, 28, 0.8);
   }
 }
 :root[data-theme="dark"] {
@@ -43,9 +46,12 @@
   --medio: #e3a33a;
   --bajo: #ec6a5c;
   --sombra: none;
+  --velo: rgba(18, 22, 28, 0.8);
 }
 
 * { box-sizing: border-box; }
+/* Sin esto, reglas como .barra-zona { display: flex } ganan al atributo hidden */
+[hidden] { display: none !important; }
 
 body {
   margin: 0;
@@ -53,6 +59,20 @@ body {
   color: var(--texto);
   font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
+
+/* Foto de fondo en blanco y negro, distinta en cada pestaña (app.js pone body[data-vista]) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(var(--velo), var(--velo)), var(--foto) center / cover no-repeat;
+}
+body[data-vista="inicio"] { --foto: url("../img/fondos/bienvenida.jpg"); }
+body[data-vista="panel"] { --foto: url("../img/fondos/panel.jpg"); }
+body[data-vista="prediccion"] { --foto: url("../img/fondos/prediccion.jpg"); }
+body[data-vista="datos"] { --foto: url("../img/fondos/datos.jpg"); }
+body[data-vista="acerca"] { --foto: url("../img/fondos/acerca.jpg"); }
 
 h1, h2, h3 { margin: 0; line-height: 1.25; }
 h2 { font-size: 1.05rem; font-weight: 600; }
@@ -65,7 +85,7 @@ h2 small { font-weight: 400; color: var(--texto-suave); font-size: 0.85rem; }
   padding: 14px 24px 0;
 }
 .marca { display: flex; align-items: center; gap: 12px; }
-.logo { font-size: 2rem; color: var(--sol); }
+.logo { display: block; }
 .marca h1 { font-size: 1.35rem; }
 .subtitulo { margin: 0; color: var(--texto-suave); font-size: 0.9rem; }
 
@@ -98,6 +118,7 @@ select, input {
   border-radius: 8px;
   padding: 8px 10px;
 }
+input[type="range"] { padding: 0; border: 0; background: none; accent-color: var(--acento); }
 select:focus, input:focus, button:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px; }
 
 /* Tarjetas */
@@ -114,6 +135,7 @@ select:focus, input:focus, button:focus-visible { outline: 2px solid var(--acent
 .tarjeta > h2 { margin-bottom: 8px; }
 
 .rejilla-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.rejilla-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .rejilla-pred { display: grid; grid-template-columns: minmax(260px, 1fr) 2fr; gap: 16px; }
 
 .grafico { position: relative; height: 280px; }
@@ -148,13 +170,23 @@ select:focus, input:focus, button:focus-visible { outline: 2px solid var(--acent
 }
 .boton:hover { filter: brightness(1.08); }
 .boton.secundario { background: var(--acento-suave); color: var(--acento); }
+.boton.grande { font-size: 1.05rem; padding: 12px 22px; }
+
+/* Bienvenida */
+.heroe { text-align: center; max-width: 720px; margin: 24px auto 32px; }
+.heroe h2 { font-size: 2rem; margin: 12px 0; }
+.heroe p { font-size: 1.1rem; color: var(--texto-suave); }
+.acciones { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+.bienvenida .kpi { text-align: center; }
+.bienvenida .tarjeta h3 { margin-bottom: 6px; }
+.bienvenida .tarjeta p { margin: 0; color: var(--texto-suave); }
+.privacidad ul { margin: 8px 0 16px; padding-left: 20px; }
 
 /* Formulario */
 .formulario { display: flex; flex-direction: column; gap: 6px; }
 .formulario label { font-weight: 500; font-size: 0.9rem; margin-top: 6px; }
-.formulario .boton { margin-top: 10px; }
-.opcional { color: var(--texto-suave); font-weight: 400; font-size: 0.8rem; }
-.error { color: var(--bajo); min-height: 1.2em; margin: 4px 0 0; font-size: 0.88rem; }
+.formulario output { font-weight: 700; color: var(--acento); font-variant-numeric: tabular-nums; }
+.formulario .nota { margin: 0; }
 
 /* Resultado */
 .resultado .vacio { color: var(--texto-suave); }
@@ -194,11 +226,12 @@ select:focus, input:focus, button:focus-visible { outline: 2px solid var(--acent
 .pie { text-align: center; color: var(--texto-suave); font-size: 0.82rem; padding: 0 16px 24px; }
 
 @media (max-width: 800px) {
-  .rejilla-2, .rejilla-pred { grid-template-columns: 1fr; }
+  .rejilla-2, .rejilla-3, .rejilla-pred { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {
   .cabecera { padding: 12px 16px 0; }
   main { padding: 16px 16px 32px; }
   .grafico, .grafico.alto { height: 260px; }
   .res-valor { font-size: 2.1rem; }
+  .heroe h2 { font-size: 1.5rem; }
 }

@@ -5,19 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OcupaSol · Predictor de ocupación hotelera</title>
   <meta name="description" content="Predicción de la ocupación hotelera en la Costa del Sol con datos del INE.">
+  <link rel="icon" href="img/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body data-vista="inicio">
   <header class="cabecera">
     <div class="marca">
-      <span class="logo" aria-hidden="true">☀</span>
+      <img class="logo" src="img/logo.svg" alt="" width="44" height="44">
       <div>
         <h1>OcupaSol</h1>
         <p class="subtitulo">Predictor de ocupación hotelera · Costa del Sol</p>
       </div>
     </div>
     <nav class="pestanas" role="tablist" aria-label="Secciones">
-      <button role="tab" class="pestana activa" aria-selected="true" data-tab="panel">Panel</button>
+      <button role="tab" class="pestana activa" aria-selected="true" data-tab="inicio">Inicio</button>
+      <button role="tab" class="pestana" aria-selected="false" data-tab="panel">Panel</button>
       <button role="tab" class="pestana" aria-selected="false" data-tab="prediccion">Predicción</button>
       <button role="tab" class="pestana" aria-selected="false" data-tab="datos">Datos</button>
       <button role="tab" class="pestana" aria-selected="false" data-tab="acerca">Acerca de</button>
@@ -25,6 +27,52 @@
   </header>
 
   <main>
+    <!-- INICIO (bienvenida) -->
+    <section id="tab-inicio" class="seccion bienvenida" role="tabpanel">
+      <div class="heroe">
+        <img src="img/logo.svg" alt="" width="96" height="96">
+        <h2>Anticípate a la ocupación de tu hotel en la Costa del Sol</h2>
+        <p>
+          OcupaSol predice la ocupación hotelera de los próximos 12 meses con datos oficiales del INE
+          y la convierte en decisiones: cuánto personal necesitas, qué precio poner y cuánto puedes ingresar.
+        </p>
+        <div class="acciones">
+          <a class="boton grande" href="#prediccion">Ver mi predicción</a>
+          <a class="boton secundario grande" href="#panel">Explorar el panel</a>
+        </div>
+      </div>
+
+      <div class="kpis" id="cifras"></div>
+
+      <div class="rejilla-3">
+        <div class="tarjeta">
+          <h3>Predicción a 12 meses</h3>
+          <p>Para toda la Costa del Sol y 7 municipios, con un intervalo que te dice cuánto puede fallar.
+            Tiene en cuenta que la Semana Santa cambia de mes cada año.</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Ajustada a tu hotel</h3>
+          <p>Mueve los controles de habitaciones y precio y verás al momento tu ocupación, tus ingresos
+            del mes y el personal recomendado.</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Transparente</h3>
+          <p>Te enseñamos el error real del modelo y lo comparamos con la referencia más simple,
+            para que sepas cuánto fiarte.</p>
+        </div>
+      </div>
+
+      <div class="tarjeta privacidad">
+        <h3>Tu privacidad nos importa</h3>
+        <ul>
+          <li>No hace falta registrarse ni dejar ningún dato personal.</li>
+          <li>Los datos de tu hotel se calculan en tu navegador: no los guardamos, no los enviamos a ningún servidor y no los vendemos.</li>
+          <li>Sin cookies. La única conexión externa es para descargar la librería de gráficos.</li>
+        </ul>
+        <a class="boton" href="#prediccion">Empezar ahora</a>
+      </div>
+    </section>
+
     <div class="barra-zona">
       <label for="zona">Zona</label>
       <select id="zona"></select>
@@ -32,7 +80,7 @@
     </div>
 
     <!-- PANEL -->
-    <section id="tab-panel" class="seccion" role="tabpanel">
+    <section id="tab-panel" class="seccion" role="tabpanel" hidden>
       <div class="kpis" id="kpis"></div>
 
       <div class="tarjeta">
@@ -67,24 +115,20 @@
     <!-- PREDICCIÓN -->
     <section id="tab-prediccion" class="seccion" role="tabpanel" hidden>
       <div class="rejilla-pred">
-        <form class="tarjeta formulario" id="form-prediccion" novalidate>
+        <form class="tarjeta formulario" id="form-prediccion">
           <h2>Tu hotel</h2>
           <label for="mes-objetivo">Mes a predecir</label>
-          <select id="mes-objetivo" required></select>
+          <select id="mes-objetivo"></select>
 
-          <label for="plazas-hotel">Plazas (camas) de tu hotel</label>
-          <input id="plazas-hotel" type="number" min="1" max="5000" step="1" value="200" required>
+          <label for="habitaciones-hotel">Habitaciones: <output id="v-habitaciones" for="habitaciones-hotel"></output></label>
+          <input id="habitaciones-hotel" type="range" min="5" max="1000" step="5" value="100">
 
-          <label for="precio-medio">Precio medio actual por habitación/noche (€) <span class="opcional">opcional</span></label>
-          <input id="precio-medio" type="number" min="0" max="5000" step="1" placeholder="Ej. 120">
-
-          <p class="error" id="error-form" role="alert"></p>
-          <button type="submit" class="boton">Calcular predicción</button>
+          <label for="precio-hotel">Precio por habitación y noche: <output id="v-precio" for="precio-hotel"></output></label>
+          <input id="precio-hotel" type="range" min="20" max="800" step="5" value="150">
+          <p class="nota" id="precio-zona"></p>
         </form>
 
-        <div class="tarjeta resultado" id="resultado" aria-live="polite">
-          <p class="vacio">Rellena el formulario para ver la predicción.</p>
-        </div>
+        <div class="tarjeta resultado" id="resultado" aria-live="polite"></div>
       </div>
 
       <div class="tarjeta">
@@ -133,13 +177,22 @@
         <h3>Datos</h3>
         <p>
           Instituto Nacional de Estadística (INE), <em>Encuesta de Ocupación Hotelera</em>: tablas 2013 y 2039
-          (zonas turísticas) y 2076 y 2078 (puntos turísticos). Datos mensuales oficiales desde 1999.
+          (zonas turísticas) y 2076 y 2078 (puntos turísticos), datos mensuales oficiales desde 1999.
+          Tarifa media diaria (ADR) de los <em>Indicadores de Rentabilidad del Sector Hotelero</em>: tablas 46297 y 46298, desde 2021.
         </p>
         <h3>Modelo</h3>
         <p>
           Regresión lineal regularizada (ridge) que parte del mismo mes del año anterior y aprende a corregirlo
-          con la tendencia reciente. Se entrena por separado para cada zona y se excluyen los meses de la COVID
+          con la tendencia reciente y con el cambio de fecha de la Semana Santa (que cae en marzo o en abril
+          según el año). Se entrena por separado para cada zona y se excluyen los meses de la COVID
           (mar-2020 a dic-2021). El intervalo que acompaña a cada predicción sale del error medido en la validación.
+        </p>
+        <h3>Tu hotel: habitaciones y precio</h3>
+        <p>
+          Para tu hotel usamos la predicción de ocupación <strong>por habitaciones</strong> de la zona. El precio se
+          compara con la tarifa media diaria (ADR) que publicó el INE para esa zona el mismo mes del año anterior.
+          Suponemos que si cobras un 10 % más que esa media llenas un 10 % menos, y al revés. Esta regla es una
+          <strong>suposición simplificada</strong>, no algo aprendido de los datos.
         </p>
         <h3>Limitaciones</h3>
         <ul>
@@ -147,6 +200,15 @@
           <li>No conoce eventos futuros (congresos, crisis, cambios de vuelos). Úsala como apoyo, no como verdad absoluta.</li>
           <li>Los datos del INE se publican con un mes y medio de retraso aproximadamente.</li>
         </ul>
+        <h3>Fotografías</h3>
+        <p class="nota">
+          Fotos de Wikimedia Commons, pasadas a blanco y negro:
+          <a href="https://commons.wikimedia.org/wiki/File:Alcazaba,_M%C3%A1laga,_Espa%C3%B1a,_2023-05-20,_DD_98.jpg">Alcazaba de Málaga</a>,
+          <a href="https://commons.wikimedia.org/wiki/File:Castillo_El_Bil_Bil,_Benalm%C3%A1dena,_M%C3%A1laga,_Espa%C3%B1a,_2023-05-18,_DD_61.jpg">Castillo Bil-Bil</a> y
+          <a href="https://commons.wikimedia.org/wiki/File:Catedral_de_la_Encarnaci%C3%B3n,_M%C3%A1laga,_Espa%C3%B1a,_2023-05-19,_DD_16.jpg">Catedral de Málaga</a>, de Diego Delso (CC BY-SA 4.0);
+          <a href="https://commons.wikimedia.org/wiki/File:View_from_Balc%C3%B3n_de_Europa_in_Nerja_2014.jpg">vista desde el Balcón de Europa</a>, de Tuxyso (CC BY-SA 3.0);
+          <a href="https://commons.wikimedia.org/wiki/File:Castillo_Sohail_(Fuengirola).jpg">Castillo Sohail</a>, de José Luis Filpo Cabana (CC BY-SA 4.0).
+        </p>
         <p class="nota">Proyecto del curso <em>Programación en Inteligencia Artificial y Big Data aplicables en entornos 5G</em> (98/2024/LJ/0001 29-0047).</p>
       </div>
     </section>

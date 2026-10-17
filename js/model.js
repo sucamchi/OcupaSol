@@ -7,6 +7,9 @@
  *   - tendencia reciente: variación interanual media de los últimos 3 meses conocidos
  *   - cambio del año pasado en ese mismo mes (captura el "rebote" o vuelta a la media)
  *   - tendencia reciente x horizonte (la tendencia pierde fuerza cuanto más lejos predecimos)
+ *   - Semana Santa: cambia de mes según el año (marzo o abril), así que comparar
+ *     con el mismo mes del año anterior falla cuando se mueve. Medimos qué parte
+ *     de la Semana Santa cae en el mes este año menos la que cayó el año pasado.
  *
  *   ocupación(t) = ocupación(t-12) + w · features
  *
@@ -47,6 +50,38 @@
     return serie;
   }
 
+  /** Domingo de Pascua (algoritmo anónimo gregoriano o de Meeus). Devuelve [mes, día]. */
+  function pascua(anio) {
+    const a = anio % 19;
+    const b = Math.floor(anio / 100);
+    const c = anio % 100;
+    const d = Math.floor(b / 4);
+    const e = b % 4;
+    const f = Math.floor((b + 8) / 25);
+    const g = Math.floor((b - f + 1) / 3);
+    const h = (19 * a + b - d - g + 15) % 30;
+    const i = Math.floor(c / 4);
+    const k = c % 4;
+    const l = (32 + 2 * e + 2 * i - h - k) % 7;
+    const m = Math.floor((a + 11 * h + 22 * l) / 451);
+    const mes = Math.floor((h + l - 7 * m + 114) / 31);
+    const dia = ((h + l - 7 * m + 114) % 31) + 1;
+    return [mes, dia];
+  }
+
+  /** Fracción (0 a 1) de la Semana Santa, del Domingo de Ramos al de Pascua (8 días), que cae en `fecha`. */
+  function semanaSanta(fecha) {
+    const [anio, mes] = fecha.split("-").map(Number);
+    const [mp, dp] = pascua(anio);
+    let dias = 0;
+    for (let k = 0; k <= 7; k++) {
+      // Date.UTC pasa solo al mes anterior si el día queda por debajo de 1
+      const dia = new Date(Date.UTC(anio, mp - 1, dp - k));
+      if (dia.getUTCMonth() + 1 === mes) dias++;
+    }
+    return dias / 8;
+  }
+
   const valido = (serie, f) => serie.has(f) && !esCovid(f);
 
   function tendencia(serie, origen) {
@@ -67,7 +102,8 @@
     const tend = tendencia(serie, origen);
     const cambioAnterior = valido(serie, l24) ? serie.get(l12) - serie.get(l24) : 0;
     const horizonteAnios = mesesEntre(origen, objetivo) / 12;
-    return [1, tend, cambioAnterior, horizonteAnios * tend];
+    const cambioSemanaSanta = semanaSanta(objetivo) - semanaSanta(l12);
+    return [1, tend, cambioAnterior, horizonteAnios * tend, cambioSemanaSanta];
   }
 
   /** Resuelve (XᵀX + λI)w = Xᵀy por eliminación de Gauss-Jordan (sin penalizar el término independiente). */
@@ -187,5 +223,5 @@
     return { origen, modelo, validacion, puntos };
   }
 
-  global.Modelo = { crearSerie, pronosticar, validar, desplazar, esCovid };
+  global.Modelo = { crearSerie, pronosticar, validar, desplazar, esCovid, semanaSanta };
 })(window);

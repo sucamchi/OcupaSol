@@ -24,6 +24,9 @@ TABLA_ZONA_OCUP = 2013     # Establecimientos, plazas, grados de ocupación y pe
 TABLA_ZONA_VIAJ = 2039     # Viajeros y pernoctaciones por zonas turísticas
 TABLA_PUNTO_OCUP = 2076    # Ídem por puntos turísticos (municipios)
 TABLA_PUNTO_VIAJ = 2078    # Viajeros y pernoctaciones por puntos turísticos
+# Tarifa media diaria (ADR) de la Encuesta de Rentabilidad Hotelera (IRSH), desde 2021
+TABLA_ZONA_ADR = 46297
+TABLA_PUNTO_ADR = 46298
 
 ZONA_INE = "Costa Del Sol (Málaga)"
 ZONA_APP = "Costa del Sol (total)"
@@ -37,6 +40,7 @@ METRICAS_OCUP = [
     ("ocupacion_fin_semana", "Grado de ocupación por plazas en fin de semana."),
     ("establecimientos", "Número de establecimientos abiertos estimados."),
     ("plazas", "Número de plazas estimadas."),
+    ("habitaciones", "Número de habitaciones estimadas. Total categorías. Dato."),
     ("personal", "Personal empleado."),
 ]
 METRICAS_VIAJ = [
@@ -45,7 +49,8 @@ METRICAS_VIAJ = [
     ("pernoctaciones_residentes", "Pernoctaciones.", "Residentes en España"),
     ("pernoctaciones_extranjeros", "Pernoctaciones.", "Residentes en el extranjero"),
 ]
-COLUMNAS = ["fecha", "año", "mes", "zona"] + [m[0] for m in METRICAS_OCUP] + [m[0] for m in METRICAS_VIAJ]
+COLUMNAS = (["fecha", "año", "mes", "zona"] + [m[0] for m in METRICAS_OCUP]
+            + [m[0] for m in METRICAS_VIAJ] + ["tarifa_media"])
 
 
 def descargar(tabla):
@@ -82,10 +87,10 @@ def serie_a_dict(serie):
     return datos
 
 
-def extraer(tabla_ocup, tabla_viaj, zona_ine, zona_app, filas):
+def extraer(tabla_ocup, tabla_viaj, tabla_adr, zona_ine, zona_app, filas):
     for col, clave in METRICAS_OCUP:
         series = [s for s in tabla_ocup if clave in s["Nombre"] and es_zona(s["Nombre"], zona_ine)
-                  and "habitaciones estimadas" not in s["Nombre"]]
+                  and (col == "habitaciones" or "habitaciones estimadas" not in s["Nombre"])]
         if not series:
             print(f"  AVISO: sin serie '{col}' para {zona_app}")
             continue
@@ -99,17 +104,26 @@ def extraer(tabla_ocup, tabla_viaj, zona_ine, zona_app, filas):
             continue
         for fecha, valor in serie_a_dict(series[0]).items():
             filas.setdefault((fecha, zona_app), {})[col] = valor
+    # El INE da el dato y su tasa de variación; nos quedamos con el dato en euros
+    series = [s for s in tabla_adr if "Total categorías. Dato." in s["Nombre"]
+              and es_zona(s["Nombre"], zona_ine)]
+    if not series:
+        print(f"  AVISO: sin serie 'tarifa_media' para {zona_app}")
+        return
+    for fecha, valor in serie_a_dict(series[0]).items():
+        filas.setdefault((fecha, zona_app), {})["tarifa_media"] = valor
 
 
 def main():
     raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     zona_ocup, zona_viaj = descargar(TABLA_ZONA_OCUP), descargar(TABLA_ZONA_VIAJ)
     punto_ocup, punto_viaj = descargar(TABLA_PUNTO_OCUP), descargar(TABLA_PUNTO_VIAJ)
+    zona_adr, punto_adr = descargar(TABLA_ZONA_ADR), descargar(TABLA_PUNTO_ADR)
 
     filas = {}
-    extraer(zona_ocup, zona_viaj, ZONA_INE, ZONA_APP, filas)
+    extraer(zona_ocup, zona_viaj, zona_adr, ZONA_INE, ZONA_APP, filas)
     for m in MUNICIPIOS:
-        extraer(punto_ocup, punto_viaj, m, m, filas)
+        extraer(punto_ocup, punto_viaj, punto_adr, m, m, filas)
 
     registros = []
     for (fecha, zona), valores in sorted(filas.items(), key=lambda x: (x[0][1], x[0][0])):
@@ -130,7 +144,8 @@ def main():
             w.writerow({k: ("" if v is None else v) for k, v in r.items()})
 
     meta = {
-        "fuente": "INE - Encuesta de Ocupación Hotelera (tablas 2013, 2039, 2076, 2078)",
+        "fuente": "INE - Encuesta de Ocupación Hotelera (tablas 2013, 2039, 2076, 2078) "
+                  "e Indicadores de Rentabilidad Hotelera (tablas 46297, 46298)",
         "generado": datetime.now().strftime("%Y-%m-%d"),
         "registros": len(registros),
         "columnas": COLUMNAS,

@@ -6,6 +6,8 @@
   const META = window.DATASET_META || {};
   const ZONA_TOTAL = "Costa del Sol (total)";
   const MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+  // Suposición (no aprendida de los datos): cobrar un 10 % más que la media de la zona llena un 10 % menos
+  const ELASTICIDAD = 1;
   const MESES_LARGOS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto",
     "septiembre", "octubre", "noviembre", "diciembre"];
 
@@ -65,6 +67,9 @@
       x.setAttribute("aria-selected", x === boton);
     });
     document.querySelectorAll(".seccion").forEach((s) => { s.hidden = s.id !== `tab-${nombre}`; });
+    $(".barra-zona").hidden = nombre === "inicio";
+    // Cada pestaña tiene su foto de fondo (ver body[data-vista] en styles.css)
+    document.body.dataset.vista = nombre;
     // Chart.js necesita redibujar al hacerse visible
     Object.values(graficos).forEach((g) => g.resize());
   }
@@ -76,8 +81,9 @@
         history.replaceState(null, "", `#${b.dataset.tab}`);
       });
     });
-    // Permite enlazar directamente a una pestaña: index.html#prediccion
-    mostrarPestana(location.hash.slice(1) || "panel");
+    // Permite enlazar a una pestaña (index.html#prediccion); los botones de la bienvenida usan estos enlaces
+    window.addEventListener("hashchange", () => mostrarPestana(location.hash.slice(1) || "inicio"));
+    mostrarPestana(location.hash.slice(1) || "inicio");
   }
 
   // ---------- Panel ----------
@@ -220,17 +226,33 @@
     $("#mapa-calor").innerHTML = html + "</tbody>";
   }
 
+  // ---------- Bienvenida ----------
+  function pintarCifras() {
+    const fechas = DATOS.map((r) => r.fecha).sort();
+    const cifra = (valor, texto) => `<div class="kpi"><div class="valor">${valor}</div><div class="detalle">${texto}</div></div>`;
+    $("#cifras").innerHTML =
+      cifra(DATOS.length.toLocaleString("es-ES"), "registros mensuales oficiales del INE") +
+      cifra(new Set(DATOS.map((r) => r.zona)).size, "zonas: la Costa del Sol y 7 municipios") +
+      cifra(fechas[0].slice(0, 4), "primer año con datos") +
+      cifra(12, "meses de predicción");
+  }
+
   // ---------- Predicción ----------
+  // Dos pronósticos: por plazas para los gráficos y por habitaciones para el cálculo de tu hotel
   let pronostico = null;
+  let pronosticoHab = null;
 
   function calcularPronostico(zona) {
-    const serie = Modelo.crearSerie(DATOS, zona);
-    pronostico = Modelo.pronosticar(serie);
+    pronostico = Modelo.pronosticar(Modelo.crearSerie(DATOS, zona));
+    pronosticoHab = Modelo.pronosticar(Modelo.crearSerie(DATOS, zona, "ocupacion_habitaciones"));
     const sel = $("#mes-objetivo");
+    const elegido = sel.value;
     sel.innerHTML = pronostico.puntos.map((p) => `<option value="${p.fecha}">${esc(etiquetaMesLarga(p.fecha))}</option>`).join("");
+    // Al cambiar de zona se conserva el mes elegido si sigue en la lista
+    if (pronostico.puntos.some((p) => p.fecha === elegido)) sel.value = elegido;
     pintarGraficoPrediccion(zona);
     pintarValidacion();
-    $("#resultado").innerHTML = `<p class="vacio">Rellena el formulario para ver la predicción.</p>`;
+    pintarResultado();
   }
 
   function pintarGraficoPrediccion(zona) {
@@ -305,11 +327,11 @@
     });
   }
 
-  /** Personal por plaza ocupada en la zona para ese mes del año (media de los últimos 3 años con dato). */
+  /** Personal por habitación ocupada en la zona para ese mes del año (media de los últimos 3 años con dato). */
   function ratioPersonal(zona, mes) {
-    const regs = registrosZona(zona).filter((r) => r.mes === mes && r.personal && r.plazas && r.ocupacion_plazas && !Modelo.esCovid(r.fecha)).slice(-3);
+    const regs = registrosZona(zona).filter((r) => r.mes === mes && r.personal && r.habitaciones && r.ocupacion_habitaciones && !Modelo.esCovid(r.fecha)).slice(-3);
     if (!regs.length) return null;
-    const ratios = regs.map((r) => r.personal / (r.plazas * r.ocupacion_plazas / 100));
+    const ratios = regs.map((r) => r.personal / (r.habitaciones * r.ocupacion_habitaciones / 100));
     return ratios.reduce((s, x) => s + x, 0) / ratios.length;
   }
 
@@ -324,7 +346,7 @@
     return { clase: "baja", texto: "Demanda baja para la zona" };
   }
 
-  function recomendaciones(nivel, precio) {
+  function recomendaciones(nivel, precio, fecha) {
     const r = [];
     if (nivel.clase === "alta") {
       r.push("Sube tarifas o aplica estancia mínima: será de los meses más fuertes de la zona.");
@@ -338,66 +360,80 @@
       r.push("Buen momento para vacaciones del personal y obras de mantenimiento.");
       r.push("Apóyate en las OTA para ganar visibilidad.");
     }
-    if (precio) {
-      const factor = nivel.clase === "alta" ? 1.1 : nivel.clase === "media" ? 1 : 0.9;
-      r.push(`Precio orientativo: ${fmt(precio * factor, 0)} € (${factor > 1 ? "+10 %" : factor < 1 ? "−10 %" : "sin cambios"} sobre tu precio actual).`);
+    const factor = nivel.clase === "alta" ? 1.1 : nivel.clase === "media" ? 1 : 0.9;
+    r.push(`Precio orientativo: ${fmt(precio * factor, 0)} € (${factor > 1 ? "+10 %" : factor < 1 ? "−10 %" : "sin cambios"} sobre tu precio).`);
+    const diasSS = Modelo.semanaSanta(fecha) * 8;
+    if (diasSS > 0) {
+      r.push(`Este mes incluye ${diasSS === 8 ? "toda la" : `${diasSS} de los 8 días de la`} Semana Santa: sube la tarifa esos días y pide estancia mínima.`);
     }
     return r;
   }
 
-  function enviarFormulario(e) {
-    e.preventDefault();
-    const err = $("#error-form");
-    err.textContent = "";
+  function pintarResultado() {
     const zona = $("#zona").value;
     const fecha = $("#mes-objetivo").value;
-    const plazas = Number($("#plazas-hotel").value);
-    const precioTxt = $("#precio-medio").value.trim();
-    const precio = precioTxt === "" ? null : Number(precioTxt);
+    const habitaciones = Number($("#habitaciones-hotel").value);
+    const precio = Number($("#precio-hotel").value);
+    $("#v-habitaciones").textContent = fmt(habitaciones, 0);
+    $("#v-precio").textContent = `${fmt(precio, 0)} €`;
 
-    if (!Number.isInteger(plazas) || plazas < 1 || plazas > 5000) {
-      err.textContent = "Introduce un número de plazas entero entre 1 y 5000.";
-      return;
-    }
-    if (precio !== null && (!Number.isFinite(precio) || precio < 0 || precio > 5000)) {
-      err.textContent = "El precio debe estar entre 0 y 5000 €.";
-      return;
-    }
     const punto = pronostico.puntos.find((p) => p.fecha === fecha);
-    if (!punto) {
-      err.textContent = "No hay predicción disponible para ese mes.";
+    const puntoHab = pronosticoHab.puntos.find((p) => p.fecha === fecha);
+    if (!punto || !puntoHab) {
+      $("#precio-zona").textContent = "";
+      $("#resultado").innerHTML = `<p class="vacio">No hay predicción disponible para ese mes.</p>`;
       return;
     }
 
-    const nivel = nivelDemanda(zona, punto.prediccion);
-    const ocupadas = plazas * punto.prediccion / 100;
-    const ratio = ratioPersonal(zona, Number(fecha.slice(5)));
-    const personal = ratio ? Math.round(ocupadas * ratio) : null;
+    // Precio de referencia: tarifa media (ADR) de la zona el mismo mes del año anterior
     const anioAnterior = registrosZona(zona).find((r) => r.fecha === Modelo.desplazar(fecha, -12));
+    const ref = anioAnterior ? anioAnterior.tarifa_media : null;
+    let ajuste = 1;
+    if (ref) {
+      const dif = precio / ref - 1;
+      ajuste = 1 - ELASTICIDAD * dif;
+      $("#precio-zona").textContent = `Media de la zona en ${etiquetaMesLarga(anioAnterior.fecha)}: ${fmt(ref, 0)} € (INE). ` +
+        `Tu precio está un ${fmt(Math.abs(100 * dif), 0)} % ${dif >= 0 ? "por encima" : "por debajo"}.`;
+    } else {
+      $("#precio-zona").textContent = "El INE no publicó la tarifa media de esta zona ese mes: el precio no cambia la ocupación.";
+    }
+    const limitar = (v) => Math.min(100, Math.max(0, v));
+    const ocupacion = limitar(puntoHab.prediccion * ajuste);
+    const ocupadas = habitaciones * ocupacion / 100;
+    const [a, m] = fecha.split("-").map(Number);
+    const diasMes = new Date(a, m, 0).getDate();
+    const ingresos = ocupadas * precio * diasMes;
+    const ratio = ratioPersonal(zona, m);
+    const personal = ratio ? Math.round(ocupadas * ratio) : null;
+    const nivel = nivelDemanda(zona, punto.prediccion);
 
     $("#resultado").innerHTML = `
       <h2>${esc(zona)} · ${esc(etiquetaMesLarga(fecha))}</h2>
       <div class="res-principal">
-        <span class="res-valor">${fmt(punto.prediccion)} %</span>
+        <span class="res-valor">${fmt(ocupacion)} %</span>
         <span class="insignia ${nivel.clase}">${nivel.texto}</span>
       </div>
-      <p class="res-intervalo">Ocupación por plazas prevista. Intervalo del 90 %: ${fmt(punto.min)} % – ${fmt(punto.max)} %</p>
+      <p class="res-intervalo">Ocupación prevista de tus habitaciones con ese precio. Intervalo del 90 %:
+        ${fmt(limitar(puntoHab.min * ajuste))} % – ${fmt(limitar(puntoHab.max * ajuste))} %.
+        Media prevista de la zona: ${fmt(puntoHab.prediccion)} %.</p>
       <div class="res-datos">
-        <div><strong>${fmt(ocupadas, 0)}</strong><span>plazas ocupadas de media en tu hotel</span></div>
+        <div><strong>${fmt(ocupadas, 0)}</strong><span>habitaciones ocupadas por noche</span></div>
+        <div><strong>${fmt(ingresos, 0)} €</strong><span>ingresos por habitaciones en el mes</span></div>
+        <div><strong>${fmt(precio * ocupacion / 100, 0)} €</strong><span>RevPAR (ingreso por habitación disponible)</span></div>
         <div><strong>${personal !== null ? fmt(personal, 0) : "–"}</strong><span>empleados recomendados (ratio de la zona)</span></div>
-        <div><strong>${anioAnterior && anioAnterior.ocupacion_plazas !== null ? fmt(anioAnterior.ocupacion_plazas) + " %" : "–"}</strong><span>ocupación real el mismo mes del año anterior</span></div>
       </div>
       <h3>Recomendaciones</h3>
-      <ul class="recomendaciones">${recomendaciones(nivel, precio).map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`;
+      <ul class="recomendaciones">${recomendaciones(nivel, precio, fecha).map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`;
   }
 
   // ---------- Datos ----------
   const COLUMNAS_TABLA = [
     ["fecha", "Fecha", 0], ["zona", "Zona", 0], ["ocupacion_plazas", "Ocup. plazas %", 1],
     ["ocupacion_habitaciones", "Ocup. hab. %", 1], ["ocupacion_fin_semana", "Ocup. finde %", 1],
-    ["establecimientos", "Establec.", 0], ["plazas", "Plazas", 0], ["personal", "Personal", 0],
+    ["establecimientos", "Establec.", 0], ["plazas", "Plazas", 0], ["habitaciones", "Habitac.", 0], ["personal", "Personal", 0],
     ["viajeros_residentes", "Viajeros ES", 0], ["viajeros_extranjeros", "Viajeros ext.", 0],
     ["pernoctaciones_residentes", "Pernoct. ES", 0], ["pernoctaciones_extranjeros", "Pernoct. ext.", 0],
+    ["tarifa_media", "Tarifa media €", 0],
   ];
 
   function iniciarDatos() {
@@ -444,8 +480,11 @@
     $("#nota-datos").textContent = `Datos del INE hasta ${etiquetaMesLarga(ultima)}`;
 
     iniciarDatos();
+    pintarCifras();
     $("#zona").addEventListener("change", actualizarZona);
-    $("#form-prediccion").addEventListener("submit", enviarFormulario);
+    // Los controles recalculan al momento; el formulario nunca se envía
+    $("#form-prediccion").addEventListener("input", pintarResultado);
+    $("#form-prediccion").addEventListener("submit", (e) => e.preventDefault());
     document.querySelectorAll("#rango-historico button").forEach((b) => {
       b.addEventListener("click", () => {
         document.querySelectorAll("#rango-historico button").forEach((x) => x.classList.toggle("activo", x === b));

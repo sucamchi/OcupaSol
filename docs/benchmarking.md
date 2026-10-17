@@ -47,7 +47,8 @@ Son las herramientas profesionales que usan los hoteles para predecir la demanda
 | Las previsiones de AEHCOS son notas de prensa sin histórico | **Panel interactivo** con el histórico desde 1999, la comparativa de municipios y la estacionalidad |
 | Los datos del INE son difíciles de consultar | Datos del INE ya limpios, visualizados y descargables en CSV |
 | Hacen falta datos internos del hotel | Funciona solo con datos públicos: útil para hoteles pequeños o para planificar antes de abrir |
-| Previsión sin traducir a decisiones | Pasa la ocupación prevista a plazas ocupadas, personal orientativo y recomendaciones de precio |
+| Previsión sin traducir a decisiones | Pasa la ocupación prevista a habitaciones ocupadas, ingresos del mes, personal orientativo y recomendaciones de precio |
+| Las plataformas comerciales piden registro y datos del hotel | **Sin registro ni datos personales**: los datos del hotel se calculan en el navegador y no se guardan ni se envían |
 
 ## 5. Ideas de mejora sacadas del benchmarking (para elegir en las fases 3–5)
 
@@ -56,9 +57,24 @@ Mantenemos la app sencilla; estas son opciones, no obligaciones:
 1. **Comparar nuestra predicción con la de AEHCOS** en el mismo mes (por ejemplo, agosto de 2026). Ojo: AEHCOS mide la ocupación por habitaciones y el INE nuestra ocupación por plazas, así que conviene comparar con la columna `ocupacion_habitaciones`.
    Primer dato: para agosto de 2026, AEHCOS preveía un 88,87 % y el INE ha publicado un 89,93 % de ocupación por habitaciones en la Costa del Sol. Los ámbitos no son idénticos (provincia frente a zona turística), pero sirve de referencia.
 2. **Selector "ocupación por plazas" o "por habitaciones"**, porque los hoteleros suelen hablar por habitaciones.
+   *Hecho en parte (17/10/2026):* el cálculo de "Tu hotel" ya usa la ocupación por habitaciones; el panel sigue por plazas.
 3. **Explicación en lenguaje sencillo** de cada predicción ("se espera algo menos que el año pasado porque los últimos meses vienen a la baja").
 4. **Botón "Descargar informe"** (imprimir o PDF) con la predicción, como hacen los productos comerciales.
 5. **Indicar la fecha de Semana Santa** en el gráfico cuando cae en marzo o en abril, porque mueve la ocupación unos 7 puntos entre esos meses.
+   *Hecho (17/10/2026):* la Semana Santa es ahora una variable del modelo y la app la menciona en las recomendaciones del mes. No se marca en el gráfico.
+
+## 6. Inspiración para la página de bienvenida (17/10/2026)
+
+Revisamos las webs de **SiteMinder** y **WuBook** para la nueva página de inicio.
+
+| Lo que hace SiteMinder | Lo que tomamos | Lo que no |
+|---|---|---|
+| Titular con la promesa principal y una frase que la explica | Titular y subtítulo sobre anticipar la ocupación | |
+| Dos botones de acción (empezar y ver cómo funciona) | "Ver mi predicción" y "Explorar el panel" | |
+| Cifras de confianza (hoteles, noches vendidas) | Cifras reales del dataset: registros, zonas, primer año y meses de predicción | Testimonios y premios (no los tenemos) |
+| Bloques de funciones por categoría | Tres tarjetas: predicción a 12 meses, ajustada a tu hotel y transparencia | |
+| Sellos de seguridad y RGPD | Bloque "Tu privacidad nos importa" | |
+| Prueba gratuita con registro | | No hay registro ni se piden datos |
 
 ---
 

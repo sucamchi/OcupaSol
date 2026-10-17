@@ -116,17 +116,66 @@ de cómo ejecutar la app y una lista de limitaciones conocidas.
 
 ---
 
-## Iteración 3 — (Fase 4) Prompt optimizado (máx. 500 palabras) con Antigravity
+## Iteración 3: Nuevas funcionalidades (Semana Santa, habitaciones y precio, bienvenida, logo y fondos)
+
+**Herramienta:** Claude Code (agente de IA)
+**Fecha:** 17/10/2026
+
+### Prompt (tal como se escribió)
+
+> okay, i want you to implement these new features to my ocupasol app (in spanish of course, even though i am speaking english, the project is in spanish): add a way to deviation specifically for semana santa (usually end of may, beginning of april) as ocuppancy rises in that period, instead of the background being plain dark blue, i want them to be greyscaled pictures of costa del sol landmarks, which rotate depending on the page being viewed, create a logo for the OcupaSol brand, change the logic so it varies depending on the number on rooms my hotel has and the price i set my rooms at, adding some sliders for example, add a welcome page before showing the full website, here is what my colleague suggested: Creo que a la web habría que añadirle una página de bienvenida, diciendo lo que hace, que nos importa su privacidad, no tiene que dejar datos personales (ni los guardamos o vendemos),  con un botón que los lleve a la página de la predicción, check websites like WuBook and SiteMinder to take inspiration and copy how they work while respecting their privacy, so no registering or data, ask follow up questions if unsure and reject ideas if they can be implemented easily
+
+Le hablo al agente en inglés porque suele mejorar la precisión. Traducido al español, el prompt sería:
+
+> vale, quiero que implementes estas nuevas funcionalidades en mi app OcupaSol (en español, claro; aunque yo hable en inglés, el proyecto está en español): añade un ajuste específico para la Semana Santa (normalmente a finales de mayo, principios de abril), ya que la ocupación sube en ese periodo; en lugar de que el fondo sea azul oscuro liso, quiero que sean fotos en escala de grises de lugares emblemáticos de la Costa del Sol, que cambien según la página que se esté viendo; crea un logo para la marca OcupaSol; cambia la lógica para que varíe según el número de habitaciones de mi hotel y el precio que pongo a mis habitaciones, añadiendo por ejemplo unos controles deslizantes; añade una página de bienvenida antes de mostrar la web completa. Esto es lo que sugirió un miembro de mi equipo: Creo que a la web habría que añadirle una página de bienvenida, diciendo lo que hace, que nos importa su privacidad, no tiene que dejar datos personales (ni los guardamos o vendemos),  con un botón que los lleve a la página de la predicción. Mira webs como WuBook y SiteMinder para inspirarte y copiar cómo funcionan, pero respetando la privacidad de los usuarios, así que sin registro ni datos. Hazme preguntas si tienes dudas y rechaza las ideas si se pueden implementar fácilmente.
+
+
+
+### Preguntas del agente y respuestas
+
+| Pregunta | Respuesta elegida |
+|---|---|
+| ¿Cómo debe influir el precio? (el INE no publica una relación entre precio y ocupación) | Ingresos + elasticidad: el precio cambia los ingresos y, con una suposición sencilla, también la ocupación |
+| ¿Habitaciones o plazas? | Habitaciones solo en el cálculo de "Tu hotel"; el panel y los gráficos siguen por plazas |
+| ¿Fotos de fondo en qué modo? | En el modo claro y en el oscuro |
+| ¿Cuándo se muestra la bienvenida? | En cada visita, sin guardar nada en el navegador |
+
+### Resultado
+
+- **Semana Santa:** nueva variable del modelo, calculada a partir de la fecha de Pascua de cada año: qué parte de la Semana Santa (del Domingo de Ramos al de Pascua) cae en el mes este año menos la que cayó el año anterior. Cae en marzo o en abril, no en mayo como decía el prompt.
+- **Habitaciones y precio:** el formulario pasa a tener dos controles deslizantes que recalculan al momento. Se predice la ocupación por habitaciones y se muestran habitaciones ocupadas, ingresos del mes, RevPAR y personal recomendado.
+- **Dataset:** dos columnas nuevas del INE, `habitaciones` (desde 2015) y `tarifa_media` (ADR en €, desde 2021, tablas 46297 y 46298). Las 14 columnas anteriores no cambian.
+- **Bienvenida:** nueva pestaña "Inicio" con qué hace la app, cifras del dataset, tres ventajas, el bloque de privacidad y botones hacia la predicción. Estructura inspirada en la web de SiteMinder.
+- **Logo:** `img/logo.svg` (sol, barras de ocupación que suben y mar), usado también como icono de la pestaña del navegador.
+- **Fondos:** cinco fotos de Wikimedia Commons en blanco y negro, una por pestaña, con sus créditos en "Acerca de".
+
+### Decisiones y errores encontrados
+
+| Problema | Solución |
+|---|---|
+| Comparar con el mismo mes del año anterior falla cuando la Semana Santa cambia de mes | Variable "cambio de Semana Santa" en el modelo. En marzo y abril, el MAE baja de 4,55 a 4,33 p.p. (media de las 8 zonas, 6 cortes). Para 2027 sube marzo (de 59,0 a 60,8 %) y baja abril (de 69,0 a 67,4 %), porque la Semana Santa vuelve a marzo |
+| No había datos de precios para relacionar precio y ocupación | Se descarga la tarifa media del INE y se usa como precio de referencia de la zona (mismo mes del año anterior). La relación precio-ocupación es una **suposición** (cobrar un 10 % más que la media llena un 10 % menos), indicada como tal en la app |
+| El ratio de personal era por plaza ocupada y el formulario ahora pide habitaciones | Se añade la columna `habitaciones` del INE y el ratio pasa a ser por habitación ocupada |
+| La web de WuBook solo mostraba la pantalla de inicio de sesión | Se tomó como referencia solo SiteMinder, sin registro ni recogida de datos |
+| Wikimedia Commons cortaba las descargas (error 429) y una foto de Puerto Banús era un cartel | Se reintentó la descarga y se cambió por la Catedral de Málaga |
+| La regla `display: flex` de la barra de zona ganaba al atributo `hidden` | Regla global `[hidden] { display: none !important; }` |
+
+---
+
+## Iteración 4 — (Fase 4) Prompt optimizado (máx. 500 palabras) con Antigravity
 
 > _Prompt optimizado aquí._
 
 ---
 
-## Iteración 4 — (Fase 5) Testeo y segunda iteración
+## Iteración 5 — (Fase 5) Testeo y segunda iteración
 
 | Prueba | Resultado esperado | Resultado obtenido | ¿OK? |
 |---|---|---|---|
-| Plazas = 0 en el formulario | Mensaje de error | | |
+| Abrir `index.html` sin `#pestaña` | Se muestra la página de bienvenida | | |
+| Mover los controles de habitaciones y precio | El resultado se actualiza al momento | | |
+| Elegir marzo o abril | Aparece la recomendación de Semana Santa si cae en ese mes | | |
+| Cambiar de pestaña | Cambia la foto de fondo | | |
 | Cambiar de zona | Se actualizan todos los gráficos y la predicción | | |
 | Abrir en el móvil | Diseño adaptado, sin scroll horizontal | | |
 | Sin conexión a Internet | Aviso de que no carga Chart.js | | |
