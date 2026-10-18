@@ -6,7 +6,7 @@ Unas 300 palabras habladas a ritmo tranquilo. A la izquierda va lo que se dice; 
 
 ## 1. Presentación (0:00 – 0:15)
 
-> Hola, somos el equipo de OcupaSol. Os presentamos un predictor de ocupación hotelera para la Costa del Sol,
+> Hola, somos el equipo de desarrollo de la aplicación web OcupaSol. Os presentamos un predictor de ocupación hotelera para la Costa del Sol,
 > pensado para pequeños y medianos hoteles que hoy planifican "a ojo" o copiando el año anterior.
 
 *Pantalla: página de Inicio con el logo.*
