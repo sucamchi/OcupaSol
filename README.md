@@ -79,7 +79,7 @@ OcupaSol/
 ├── css/styles.css                  # Estilos (solo modo oscuro)
 ├── img/
 │   ├── logo.svg                    # Logo de OcupaSol (también es el favicon)
-│   └── fondos/                     # Fotos de fondo en blanco y negro, una por pestaña
+│   └── fondos/                     # Fotos propias de Málaga en blanco y negro, una por pestaña
 ├── js/
 │   ├── model.js                    # Modelo predictivo + validación (backtesting)
 │   └── app.js                      # Interfaz: pestañas, gráficos, formulario, tabla
