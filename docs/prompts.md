@@ -162,6 +162,34 @@ Le hablo al agente en inglés porque suele mejorar la precisión. Traducido al e
 
 ---
 
+## Iteración 3.1: Modo oscuro fijo, límite de habitaciones y guion del vídeo
+
+**Fecha:** 18/10/2026
+
+### Prompt (tal como se escribió)
+
+> vale vamos a implementar los siguientes cambios: no me di cuenta, pero el modo claro es destellante, asi que deja por defecto siempre el modo oscuro, en segundo lugar, como la app va orientada a PYMES, el numero maximo de habitaciones se va a establecer en 150, por ultimo crea un guion de 2 minutos aproximadamente en un archivo llamado docs/speech.md para la compañera que va a grabar una videopresentacion de la app, puedes preguntarme si tienes dudas
+
+### Resultado
+
+- **Modo oscuro:** la app usa siempre los colores oscuros, aunque el sistema esté en modo claro. Se borran los colores claros de `css/styles.css`.
+- **Habitaciones:** el control va de 5 a 150 (antes hasta 1.000), porque la app se dirige a pymes.
+- **Guion:** `docs/speech.md`, unos 2 minutos con lo que se dice y lo que se enseña en pantalla en cada parte.
+
+### Segundo prompt (tal como se escribió)
+
+> lo de precio orientativo, la logica no tiene mucho sentido, no piensas, puedo poner un precio descomunal y aun asi me recomienda a veces 10% más, que piensas
+
+### Decisiones y errores encontrados
+
+| Problema | Solución |
+|---|---|
+| El precio orientativo era tu precio ±10 % según la demanda, así que con 800 € recomendaba 880 € aunque la ocupación ya cayera al 0 % | Parte de la tarifa media de la zona (INE, mismo mes del año anterior): +10 % con demanda alta, la media con demanda media y −10 % con demanda baja. Indica cuánto se aleja tu precio |
+| La recomendación contradecía la regla de la ocupación (cobrar un 10 % más llena un 10 % menos) | Con esa regla, cada habitación ingresa más cobrando justo la media de la zona, por eso la recomendación parte de ella |
+| Sin tarifa media del INE no hay referencia | No se muestra precio orientativo ese mes |
+
+---
+
 ## Iteración 4 — (Fase 4) Prompt optimizado (máx. 500 palabras) con Antigravity
 
 > _Prompt optimizado aquí._
@@ -179,3 +207,16 @@ Le hablo al agente en inglés porque suele mejorar la precisión. Traducido al e
 | Cambiar de zona | Se actualizan todos los gráficos y la predicción | | |
 | Abrir en el móvil | Diseño adaptado, sin scroll horizontal | | |
 | Sin conexión a Internet | Aviso de que no carga Chart.js | | |
+| Abrir la app con el sistema en modo claro | Se ve en modo oscuro | | |
+| Mover el control de habitaciones al máximo | Llega a 150 | | |
+| Poner 800 € en un mes de demanda alta | El precio orientativo sale de la media de la zona (+10 %) y dice cuánto te alejas | 165 € con una media de 150 €: "El tuyo está un 385 % por encima" (probado con Node) | Sí |
+
+### Registro de errores
+
+Errores y cambios necesarios encontrados al usar la app. Se corrigieron en la iteración 3.1.
+
+| Fecha | Error o cambio necesario | Tipo | Causa | Corrección |
+|---|---|---|---|---|
+| 18/10/2026 | El modo claro deslumbra con las fotos de fondo | Diseño | La app seguía el modo claro u oscuro del sistema | Siempre en modo oscuro: se borran los colores claros de `css/styles.css` |
+| 18/10/2026 | El control de habitaciones llegaba a 1.000, demasiado para el público de la app (pymes) | Requisito | Se eligió un máximo genérico al crear el control | Máximo de 150 habitaciones en `index.html` |
+| 18/10/2026 | Con un precio desorbitado, el precio orientativo recomendaba subirlo otro 10 % | Lógica | Se calculaba sobre tu precio (±10 % según la demanda), sin mirar la media de la zona | Parte de la tarifa media de la zona del INE y te dice cuánto te alejas de ella (`js/app.js`, función `recomendaciones`) |

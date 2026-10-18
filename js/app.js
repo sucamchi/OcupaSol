@@ -7,6 +7,7 @@
   const ZONA_TOTAL = "Costa del Sol (total)";
   const MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
   // Suposición (no aprendida de los datos): cobrar un 10 % más que la media de la zona llena un 10 % menos
+  // Con esta regla, cada habitación ingresa más cobrando la media de la zona: recomendaciones() parte de ahí
   const ELASTICIDAD = 1;
   const MESES_LARGOS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto",
     "septiembre", "octubre", "noviembre", "diciembre"];
@@ -346,7 +347,7 @@
     return { clase: "baja", texto: "Demanda baja para la zona" };
   }
 
-  function recomendaciones(nivel, precio, fecha) {
+  function recomendaciones(nivel, precio, ref, fecha) {
     const r = [];
     if (nivel.clase === "alta") {
       r.push("Sube tarifas o aplica estancia mínima: será de los meses más fuertes de la zona.");
@@ -360,8 +361,16 @@
       r.push("Buen momento para vacaciones del personal y obras de mantenimiento.");
       r.push("Apóyate en las OTA para ganar visibilidad.");
     }
-    const factor = nivel.clase === "alta" ? 1.1 : nivel.clase === "media" ? 1 : 0.9;
-    r.push(`Precio orientativo: ${fmt(precio * factor, 0)} € (${factor > 1 ? "+10 %" : factor < 1 ? "−10 %" : "sin cambios"} sobre tu precio).`);
+    // Parte de la media de la zona: con la regla de ELASTICIDAD, ahí es donde más ingresa cada habitación
+    if (ref) {
+      const factor = nivel.clase === "alta" ? 1.1 : nivel.clase === "media" ? 1 : 0.9;
+      const orientativo = ref * factor;
+      const dif = precio / orientativo - 1;
+      const comparacion = Math.abs(dif) < 0.005 ? "El tuyo coincide."
+        : `El tuyo está un ${fmt(Math.abs(100 * dif), 0)} % ${dif > 0 ? "por encima" : "por debajo"}.`;
+      const base = factor > 1 ? "un 10 % más que la media de la zona" : factor < 1 ? "un 10 % menos que la media de la zona" : "la media de la zona";
+      r.push(`Precio orientativo: ${fmt(orientativo, 0)} € (${base}). ${comparacion}`);
+    }
     const diasSS = Modelo.semanaSanta(fecha) * 8;
     if (diasSS > 0) {
       r.push(`Este mes incluye ${diasSS === 8 ? "toda la" : `${diasSS} de los 8 días de la`} Semana Santa: sube la tarifa esos días y pide estancia mínima.`);
@@ -423,7 +432,7 @@
         <div><strong>${personal !== null ? fmt(personal, 0) : "–"}</strong><span>empleados recomendados (ratio de la zona)</span></div>
       </div>
       <h3>Recomendaciones</h3>
-      <ul class="recomendaciones">${recomendaciones(nivel, precio, fecha).map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`;
+      <ul class="recomendaciones">${recomendaciones(nivel, precio, ref, fecha).map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`;
   }
 
   // ---------- Datos ----------

@@ -22,7 +22,7 @@ y en sus principales municipios, para ayudar a los hoteles a planificar personal
 | **3. Fuentes de datos** | **Encuesta de Ocupación Hotelera (EOH) del INE**, datos oficiales mensuales y públicos:<br>• Tabla 2013: establecimientos, plazas, grados de ocupación y personal por **zonas turísticas**<br>• Tabla 2039: viajeros y pernoctaciones por **zonas turísticas**<br>• Tabla 2076: establecimientos, plazas, ocupación y personal por **puntos turísticos** (municipios)<br>• Tabla 2078: viajeros y pernoctaciones por **puntos turísticos**<br>• Tablas 46297 y 46298: tarifa media diaria (ADR) por zonas y puntos turísticos (desde 2021)<br>**Dataset creado:** `data/ocupacion_costa_del_sol.csv` con **2.035 registros mensuales** (1999–2026) de la Costa del Sol y 7 municipios (Málaga, Torremolinos, Benalmádena, Fuengirola, Marbella, Estepona y Nerja), 16 variables cada uno. |
 | **4. Usuario final** | **Empresas (B2B)**: directores de hotel, *revenue managers* y responsables de RR. HH. de hoteles de la Costa del Sol. Usuarios secundarios: analistas de turismo y administraciones públicas. |
 | **5. Capacidad de IA principal** | **Predicción (modelo supervisado)**: regresión lineal regularizada (ridge) entrenada con series temporales, que aprende cómo cambia la ocupación respecto al mismo mes del año anterior según la tendencia reciente. Se valida con *backtesting* frente a un modelo de referencia. |
-| **6. Tipo de interacción** | **Dashboard interactivo**, **formulario inteligente** y **sistema de recomendaciones**: el usuario elige zona y mes y mueve los controles de habitaciones y precio de su hotel; recibe al momento la ocupación prevista, un intervalo de confianza, las habitaciones ocupadas, los ingresos del mes, el personal recomendado y consejos de precio y gestión. |
+| **6. Tipo de interacción** | **Dashboard interactivo**, **formulario inteligente** y **sistema de recomendaciones**: el usuario elige zona y mes y mueve los controles de habitaciones (hasta 150, pensado para pymes) y precio de su hotel; recibe al momento la ocupación prevista, un intervalo de confianza, las habitaciones ocupadas, los ingresos del mes, el personal recomendado y consejos de precio y gestión. |
 
 ### Problema que resuelve
 
@@ -76,7 +76,7 @@ El script regenera `data/ocupacion_costa_del_sol.csv` (evidencia del dataset) y 
 ```
 OcupaSol/
 ├── index.html                      # Aplicación web
-├── css/styles.css                  # Estilos (modo claro y oscuro)
+├── css/styles.css                  # Estilos (solo modo oscuro)
 ├── img/
 │   ├── logo.svg                    # Logo de OcupaSol (también es el favicon)
 │   └── fondos/                     # Fotos de fondo en blanco y negro, una por pestaña
@@ -88,7 +88,8 @@ OcupaSol/
 │   └── dataset.js                  # Dataset embebido para la app
 ├── scripts/build_dataset.py        # Descarga y construcción del dataset
 ├── docs/benchmarking.md            # Fase 2: aplicaciones similares y mejoras
-└── docs/prompts.md                 # Registro de prompts e iteraciones
+├── docs/prompts.md                 # Registro de prompts e iteraciones
+└── docs/speech.md                  # Guion de la videopresentación (2 min)
 ```
 
 ## Dataset
@@ -118,6 +119,8 @@ Hay huecos puntuales (por ejemplo, abril–junio de 2020 por el cierre de la COV
 - **Intervalo del 90 %:** ±1,645 × RMSE de la validación.
 - **Tu hotel:** se usa la predicción de ocupación por habitaciones de la zona. Tu precio se compara con la tarifa media del INE para esa zona el mismo mes del año anterior,
   con una suposición simple (no aprendida de los datos): cobrar un 10 % más que la media llena un 10 % menos, y al revés.
+- **Precio orientativo:** parte de esa tarifa media de la zona (con la suposición anterior, es el precio con el que más ingresa cada habitación):
+  un 10 % más si la demanda prevista es alta, la media si es media y un 10 % menos si es baja. No depende del precio que pongas; la app te dice cuánto te alejas de él.
 
 ## Seguridad y fiabilidad
 
@@ -131,4 +134,4 @@ Hay huecos puntuales (por ejemplo, abril–junio de 2020 por el cierre de la COV
 - [ ] Fase 2: documentar el prompt inicial, analizar el código generado y corregir errores (`docs/prompts.md`).
 - [ ] Fase 3: validar el MVP con un "cliente" simulado (por ejemplo, el director de un hotel de Torremolinos).
 - [ ] Fase 4: prompt optimizado (máx. 500 palabras) y mejora con Antigravity; añadir variables externas (festivos, vuelos al aeropuerto de Málaga, temperatura). La Semana Santa ya está incluida.
-- [ ] Fase 5: testeo, registro de errores y segunda iteración.
+- [ ] Fase 5: testeo, registro de errores y segunda iteración. Registro de errores empezado en `docs/prompts.md` (iteración 5).
