@@ -76,12 +76,12 @@ El script regenera `data/ocupacion_costa_del_sol.csv` (evidencia del dataset) y 
 ```
 OcupaSol/
 ├── index.html                      # Aplicación web
-├── css/styles.css                  # Estilos (solo modo oscuro)
+├── css/styles.css                  # Estilos
 ├── img/
-│   ├── logo.svg                    # Logo de OcupaSol (también es el favicon)
-│   └── fondos/                     # Fotos propias de Málaga en blanco y negro, una por pestaña
+│   ├── logo.svg                    # Logo de OcupaSol
+│   └── fondos/                     # Fotos propias de Málaga en blanco y negro
 ├── js/
-│   ├── model.js                    # Modelo predictivo + validación (backtesting)
+│   ├── model.js                    # Modelo predictivo + validación
 │   └── app.js                      # Interfaz: pestañas, gráficos, formulario, tabla
 ├── data/
 │   ├── ocupacion_costa_del_sol.csv # Dataset (2.035 registros, INE)
@@ -89,7 +89,7 @@ OcupaSol/
 ├── scripts/build_dataset.py        # Descarga y construcción del dataset
 ├── docs/benchmarking.md            # Fase 2: aplicaciones similares y mejoras
 ├── docs/prompts.md                 # Registro de prompts e iteraciones
-└── docs/speech.md                  # Guion de la videopresentación (2 min)
+└── docs/speech.md                  # Guion de la videopresentación
 ```
 
 ## Dataset
