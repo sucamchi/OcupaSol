@@ -1,0 +1,82 @@
+
+Opción 1: El proyecto más seguro (Retail & Marketing)
+
+Esta opción es ideal porque a los profesores les encanta el análisis de clientes y es muy fácil simular los datos con IA.
+• 1. Sector o industria: Retail / eCommerce (Comercio electrónico de moda o tecnología).
+• 2. Tipo de proceso a mejorar: Toma de decisiones / Análisis de datos (Segmentación de clientes y recomendación de productos).
+• 3. Tipo de usuario final: Administradores / analistas de la tienda (B2E).
+• 4. Capacidad de IA principal: Sistema de recomendación y clustering (Agrupación inteligente de clientes por comportamiento de compra).
+• 5. Tipo de interacción / interfaz: Dashboard interactivo en Power BI que muestra el comportamiento de los clientes, conectado a un script de Python que clasifica automáticamente a los usuarios en "compradores VIP", "en riesgo de abandono" o "nuevos", y sugiere qué oferta enviarles.
+
+Opción 2: El proyecto más innovador (Turismo & Entornos 5G)
+
+Esta idea encaja perfectamente con el apellido de tu curso ("entornos 5G"), ya que simula el flujo de datos en tiempo real de una ciudad.
+• 1. Sector o industria: Turismo / Ciudades Inteligentes (Smart Cities).
+• 2. Tipo de proceso a mejorar: Toma de decisiones y análisis en tiempo real (Optimización del flujo de turistas y gestión de masificaciones).
+• 3. Tipo de usuario final: Administradores públicos / Gestores turísticos de la ciudad.
+• 4. Capacidad de IA principal: Predicción (Modelos supervisados para predecir qué zonas de la ciudad se van a masificar en las próximas horas basándose en datos de antenas móviles 5G simuladas).
+• 5. Tipo de interacción / interfaz: Dashboard interactivo con alertas en tiempo real. Mostraría un mapa de la ciudad iluminando en rojo las zonas saturadas y ofreciendo recomendaciones automáticas para desviar el flujo turístico.
+
+Opción 3: El proyecto más práctico y de tendencia (Educación)
+
+Los asistentes educativos están muy de moda y la IA generativa de texto facilita muchísimo su programación.
+• 1. Sector o industria: Educación.
+• 2. Tipo de proceso a mejorar: Atención al estudiante y automatización de tareas (Tutoría personalizada y resolución de dudas sobre el temario).
+• 3. Tipo de usuario final: Cliente final / Estudiantes del curso (B2C).
+• 4. Capacidad de IA principal: NLP / IA generativa (Procesamiento de Lenguaje Natural para entender las preguntas de los alumnos sobre los apuntes).
+• 5. Tipo de interacción / interfaz: Chat conversacional (Chatbot). Una interfaz web simple donde el alumno pregunta dudas de clase y el chatbot (conectado mediante Python a la API de ChatGPT) le responde usando exclusivamente el temario del curso.
+
+
+
+
+---------------------------------------------------------
+
+
+Mi consejo para la reunión con tu grupo:
+
+No intentéis programar algo desde cero. Presenta estas opciones a tu grupo y elegid la que os resulte más atractiva. Una vez que tengáis la idea cerrada, vuestro primer paso será pedirle a una IA que os genere un "dataset simulado" (un archivo Excel o CSV con datos falsos) para empezar a trabajar en Pentaho o Power BI.
+¿Cuál de estas tres opciones te llama más la atención para proponerle a tu grupo? Si quieres, cuando elijáis una, te puedo ayudar a redactar la justificación de la FASE 1 y a plantear qué herramienta (Python, Power BI, etc.) usaríais en cada paso para que vayáis sobre seguro.
+Las respuestas de la IA pueden contener errores.
+
+
+
+PROPUESTA DE PROYECTO: EduAssist 5G (Tutor Inteligente)
+
+
+Definición del proyecto
+
+El proyecto consiste en el desarrollo de un asistente virtual educativo (Chatbot) que ayuda a los estudiantes de cursos técnicos a resolver dudas sobre el temario, realizar ejercicios prácticos y recibir explicaciones personalizadas en tiempo real.
+Aprovechando la baja latencia y velocidad de los entornos 5G, la aplicación permite a los alumnos consultar dudas complejas o pedir resúmenes de grandes volúmenes de datos (Big Data del curso) de manera instantánea desde cualquier dispositivo móvil.
+
+FASE 1. Desarrollo del Alcance
+
+• 1. 1. Sector o industria:
+Educación (EdTech / Formación técnica y profesionalizada).
+• 1. 2. Tipo de proceso a mejorar:
+Atención al cliente / Automatización de tareas. Optimizamos el soporte de tutorías al estudiante fuera del horario de clase. Automatizamos la resolución de dudas frecuentes y la generación de ejercicios de repaso personalizados basados en los apuntes oficiales.
+• 1. 3. Tipo de usuario final:
+Cliente final (B2C) / Estudiantes. Está dirigida a los propios alumnos del curso que necesitan apoyo al estudiar de forma autónoma. (Opcionalmente: Administradores/Docentes que analizan qué temas generan más dudas).
+• 1. 4. Capacidad de IA principal:
+IA Generativa y NLP (Procesamiento de Lenguaje Natural). Utilizaremos un modelo de lenguaje (LLM) mediante Python para procesar las preguntas de los alumnos, analizar el contenido del temario y generar respuestas de texto adaptadas al nivel del estudiante.
+• 1. 5. Tipo de interacción / interfaz:
+Chat conversacional (Chatbot). Una interfaz web limpia y accesible donde el usuario escribe en lenguaje natural y recibe respuestas inmediatas, complementada con un Dashboard interactivo en Power BI para que el profesor vea estadísticas de uso (ej. cuáles son los temas más consultados o las horas de mayor tráfico bajo red 5G).
+
+💡 Cómo lo vais a "vender" a nivel técnico (Sin complicaros la vida)
+
+Para que vuestro profesor vea que habéis integrado las tecnologías del curso, la estrategia es la siguiente:
+1. Pentaho / Python: Lo usaréis para estructurar los apuntes del curso (en PDF o texto) y "alimentar" la base de conocimiento de la IA.
+2. Python: Hará la llamada mágica a la API de la IA (como OpenAI/ChatGPT o similar) para que actúe como el tutor.
+3. Power BI: Registrará los datos de las conversaciones (de manera anónima) para mostrar un gráfico con los conceptos que los alumnos no entienden bien.
+¿Qué te parece este enfoque para presentarlo a tu grupo? Si te dan el visto bueno, avísame y podemos empezar a diseñar el "esqueleto" del proyecto o preparar las preguntas exactas que le haréis a la IA para que os escriba el código de la aplicación.
+
+
+
+
+Cómo queda el proyecto simplificado (Sin Pentaho)
+
+Para que tu grupo lo entienda de forma súper directa, el proyecto se reduce a dos partes:
+• Parte 1: El Chatbot (Python + IA)
+Un archivo sencillo de Python que se conecta a la API de ChatGPT. El alumno pregunta, Python le envía la pregunta a la IA junto con los apuntes del curso, y la IA responde.
+• Parte 2: El Informe (Power BI)
+Cada vez que un alumno usa el chat, Python guarda de forma automática un registro rápido en un archivo Excel (por ejemplo: la fecha, la hora y el tema de la pregunta). Luego, abrís ese Excel en Power BI para hacer un par de gráficos bonitos que muestren qué días se estudia más o qué temas son los que peor se entienden.
+Es un flujo limpio, directo y perfectamente defendible para vuestro nivel.
