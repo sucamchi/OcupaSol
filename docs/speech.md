@@ -35,7 +35,8 @@ Unas 300 palabras habladas a ritmo tranquilo. A la izquierda va lo que se dice; 
 ## 5. Predicción para tu hotel (1:00 – 1:35)
 
 > En Predicción elegimos el mes y movemos dos controles: las habitaciones del hotel, hasta 150, y el precio por
-> noche. Al momento vemos la ocupación prevista con su margen de error, las habitaciones ocupadas, los ingresos
+> noche, hasta 400 euros. Con las habitaciones, la app reconoce si somos un hotel boutique o rural, urbano o de
+> playa, o vacacional, y adapta los consejos. Al momento vemos la ocupación prevista con su margen de error, las habitaciones ocupadas, los ingresos
 > del mes y el personal recomendado. Si subimos el precio por encima de la media de la zona, la ocupación baja,
 > y la app nos da consejos de precio y gestión.
 

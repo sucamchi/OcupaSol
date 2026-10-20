@@ -32,9 +32,11 @@
       <div class="heroe">
         <img src="img/logo.svg" alt="" width="96" height="96">
         <h2>Anticípate a la ocupación de tu hotel en la Costa del Sol</h2>
+        <p class="pyme">Para pymes hoteleras: hoteles independientes de hasta 150 habitaciones</p>
         <p>
           OcupaSol predice la ocupación hotelera de los próximos 12 meses con datos oficiales del INE
           y la convierte en decisiones: cuánto personal necesitas, qué precio poner y cuánto puedes ingresar.
+          Sin las cuotas ni la complejidad de las herramientas pensadas para grandes cadenas.
         </p>
         <div class="acciones">
           <a class="boton grande" href="#prediccion">Ver mi predicción</a>
@@ -59,6 +61,23 @@
           <h3>Transparente</h3>
           <p>Te enseñamos el error real del modelo y lo comparamos con la referencia más simple,
             para que sepas cuánto fiarte.</p>
+        </div>
+      </div>
+
+      <h2 class="titulo-bloque">¿Para qué hoteles?</h2>
+      <p class="nota centrada">Pensado para los tres tipos de pyme hotelera de la Costa del Sol. La app reconoce el tuyo por el número de habitaciones.</p>
+      <div class="rejilla-3">
+        <div class="tarjeta">
+          <h3>Boutique o rural <small>hasta 40 hab.</small></h3>
+          <p>Pocos cuartos, trato cercano y una experiencia que vender. Como en Nerja (37 habitaciones de media por hotel, INE).</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Urbano o de playa independiente <small>de 45 a 100 hab.</small></h3>
+          <p>Mezcla turismo, trabajo y eventos. Como en Málaga capital (50 de media) o Marbella (73).</p>
+        </div>
+        <div class="tarjeta">
+          <h3>Vacacional <small>de 105 a 150 hab.</small></h3>
+          <p>Muy ligado a la temporada y a los turoperadores. Como en Torremolinos (152 de media) o Benalmádena (211).</p>
         </div>
       </div>
 
@@ -122,9 +141,10 @@
 
           <label for="habitaciones-hotel">Habitaciones: <output id="v-habitaciones" for="habitaciones-hotel"></output></label>
           <input id="habitaciones-hotel" type="range" min="5" max="150" step="5" value="100">
+          <p class="nota" id="tipo-hotel"></p>
 
           <label for="precio-hotel">Precio por habitación y noche: <output id="v-precio" for="precio-hotel"></output></label>
-          <input id="precio-hotel" type="range" min="20" max="800" step="5" value="150">
+          <input id="precio-hotel" type="range" min="20" max="400" step="5" value="150">
           <p class="nota" id="precio-zona"></p>
         </form>
 
@@ -171,7 +191,7 @@
       <div class="tarjeta texto">
         <h2>Sobre OcupaSol</h2>
         <p>
-          Herramienta B2B para hoteles de la Costa del Sol: predice el grado de ocupación de los próximos meses
+          Herramienta B2B para pymes hoteleras de la Costa del Sol (hoteles independientes de hasta 150 habitaciones): predice el grado de ocupación de los próximos meses
           para ayudar a planificar <strong>personal</strong>, <strong>precios</strong> y <strong>campañas</strong>.
         </p>
         <h3>Datos</h3>
@@ -193,6 +213,14 @@
           compara con la tarifa media diaria (ADR) que publicó el INE para esa zona el mismo mes del año anterior.
           Suponemos que si cobras un 10 % más que esa media llenas un 10 % menos, y al revés. Esta regla es una
           <strong>suposición simplificada</strong>, no algo aprendido de los datos.
+        </p>
+        <h3>Tipo de hotel</h3>
+        <p>
+          Según su tamaño, la app clasifica tu hotel en <strong>boutique o rural</strong> (hasta 40 habitaciones),
+          <strong>urbano o de playa independiente</strong> (de 45 a 100) o <strong>vacacional</strong> (de 105 a 150).
+          Los cortes se apoyan en las habitaciones medias por hotel que publica el INE para cada municipio
+          (37 en Nerja, 50 en Málaga, 73 en Marbella, 152 en Torremolinos, 211 en Benalmádena; 2025-2026).
+          El tipo cambia las recomendaciones, no la predicción: el INE no publica la ocupación por tipo de hotel en la Costa del Sol.
         </p>
         <h3>Limitaciones</h3>
         <ul>

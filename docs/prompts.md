@@ -190,6 +190,41 @@ Le hablo al agente en inglés porque suele mejorar la precisión. Traducido al e
 
 ---
 
+## Iteración 3.2: Enfoque a pymes, tipos de hotel y precio máximo
+
+**Fecha:** 20/10/2026
+
+### Prompt (tal como se escribió)
+
+> unos retoques que hacer en la app, necesitamos aclarar en la pagina principal que estamos enfocados hacia pymes, tambien hemos hecho investigacion y resulta que los hoteles se pueden dividir en varias categorias: hoteles boutique/rurales, hoteles urbanos/ de playa independientes y hoteles vacacionales, segun el presupuesto o num de habitaciones, quiero qe hagas tu propia investigacion e implementes esta categorizacion si lo ves correctos y tienes datos, ademas fija el precio máximo de slider entre 300-400 euros, segun veas conveniente, no olvides añadir ese prompt al documento prompts.md, si tienes dudas me preguntas
+
+### Investigación
+
+| Fuente | Dato | Uso |
+|---|---|---|
+| INE, EOH, tablas 2013 y 2076 (media ene-2025 a ago-2026) | Habitaciones medias por hotel: Nerja 37, Málaga 50, Marbella 73, Estepona 90, Fuengirola 126, Torremolinos 152, Benalmádena 211 (Costa del Sol: 82) | Cortes de los tipos de hotel |
+| INE, IRSH, tablas 46297 y 46298 | Tarifa media (ADR) por zona: máxima de 418 € en Estepona y 416 € en Marbella (agosto); en el resto, por debajo de 225 € | Precio máximo del control |
+| INE, tablas 2011 y 2058 | Ocupación y ADR por estrellas, solo a nivel nacional | No se usa: las estrellas no son el tipo de hotel y no hay datos de la Costa del Sol |
+| Hosteltur, Mews | Un hotel boutique suele tener entre 10 y 100 habitaciones (sin definición oficial) | Contraste del corte de los hoteles pequeños |
+
+### Resultado
+
+- **Inicio:** etiqueta "Para pymes hoteleras: hoteles independientes de hasta 150 habitaciones" bajo el título y nuevo bloque "¿Para qué hoteles?" con los tres tipos y sus habitaciones.
+- **Tipo de hotel:** la app lo deduce de las habitaciones: *boutique o rural* (hasta 40), *urbano o de playa independiente* (45–100) y *vacacional* (105–150). Se muestra bajo el control de habitaciones y añade un consejo propio de ese tipo al principio de las recomendaciones (`js/app.js`, función `tipoHotel`).
+- **Precio:** el control va de 20 a 400 € (antes hasta 800 €). Se elige 400 y no 300 porque en agosto la media de Marbella y Estepona supera los 400 €.
+- **Documentación:** README, "Acerca de" y guion del vídeo actualizados.
+
+### Decisiones y errores encontrados
+
+| Problema | Solución |
+|---|---|
+| El INE no publica la ocupación por tipo de hotel (ni por estrellas) en la Costa del Sol | El tipo cambia solo las recomendaciones, no la ocupación prevista. Inventar un ajuste sin datos daría una precisión falsa |
+| Clasificar por presupuesto no funciona: un hotel boutique puede ser caro o barato, y un vacacional de Marbella cobra más que uno urbano de Málaga | Se clasifica por habitaciones, que además coincide con el tamaño medio de los hoteles de cada municipio |
+| El control de habitaciones va de 5 en 5, así que no hay valores entre 40 y 45 ni entre 100 y 105 | Los tipos se describen como "hasta 40", "de 45 a 100" y "de 105 a 150" |
+| Los hoteles vacacionales de la costa suelen tener más de 150 habitaciones (Benalmádena: 211 de media) | Se mantiene el máximo de 150 (pymes): la app se dirige a los vacacionales pequeños e independientes |
+
+---
+
 ## Iteración 4 — (Fase 4) Prompt optimizado (máx. 500 palabras) con Antigravity
 
 > _Prompt optimizado aquí._
@@ -209,7 +244,10 @@ Le hablo al agente en inglés porque suele mejorar la precisión. Traducido al e
 | Sin conexión a Internet | Aviso de que no carga Chart.js | | |
 | Abrir la app con el sistema en modo claro | Se ve en modo oscuro | | |
 | Mover el control de habitaciones al máximo | Llega a 150 | | |
-| Poner 800 € en un mes de demanda alta | El precio orientativo sale de la media de la zona (+10 %) y dice cuánto te alejas | 165 € con una media de 150 €: "El tuyo está un 385 % por encima" (probado con Node) | Sí |
+| Mover el control de precio al máximo | Llega a 400 € | | |
+| Poner 30, 80 y 140 habitaciones | Tipo boutique o rural, urbano o de playa independiente y vacacional, con su consejo | | |
+| Abrir la página de Inicio | Se ve que la app es para pymes y los tres tipos de hotel | | |
+| Poner 800 € en un mes de demanda alta (antes del límite de 400 €) | El precio orientativo sale de la media de la zona (+10 %) y dice cuánto te alejas | 165 € con una media de 150 €: "El tuyo está un 385 % por encima" (probado con Node) | Sí |
 
 ### Registro de errores
 

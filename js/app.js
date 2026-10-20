@@ -347,8 +347,27 @@
     return { clase: "baja", texto: "Demanda baja para la zona" };
   }
 
-  function recomendaciones(nivel, precio, ref, fecha) {
-    const r = [];
+  /**
+   * Tipo de pyme hotelera según sus habitaciones. Cortes apoyados en las habitaciones medias por hotel del INE
+   * (2025-2026): Nerja 37, Málaga 50, Marbella 73, Torremolinos 152, Benalmádena 211.
+   */
+  function tipoHotel(habitaciones) {
+    if (habitaciones <= 40) return {
+      nombre: "boutique o rural",
+      consejo: "Hotel boutique o rural: compite por experiencia y trato, no por precio. Cuida las reseñas y empuja la reserva directa: cada habitación cuenta.",
+    };
+    if (habitaciones <= 100) return {
+      nombre: "urbano o de playa independiente",
+      consejo: "Hotel urbano o de playa independiente: combina turismo con viajes de trabajo y eventos de la zona, y revisa cada semana los precios de tus competidores cercanos.",
+    };
+    return {
+      nombre: "vacacional",
+      consejo: "Hotel vacacional: dependes mucho de la temporada. Asegura acuerdos con turoperadores y ofrece paquetes (media pensión, larga estancia) para llenar fuera del verano.",
+    };
+  }
+
+  function recomendaciones(nivel, precio, ref, fecha, tipo) {
+    const r = [tipo.consejo];
     if (nivel.clase === "alta") {
       r.push("Sube tarifas o aplica estancia mínima: será de los meses más fuertes de la zona.");
       r.push("Refuerza personal de pisos y recepción con antelación.");
@@ -385,6 +404,8 @@
     const precio = Number($("#precio-hotel").value);
     $("#v-habitaciones").textContent = fmt(habitaciones, 0);
     $("#v-precio").textContent = `${fmt(precio, 0)} €`;
+    const tipo = tipoHotel(habitaciones);
+    $("#tipo-hotel").textContent = `Tipo de hotel: ${tipo.nombre}.`;
 
     const punto = pronostico.puntos.find((p) => p.fecha === fecha);
     const puntoHab = pronosticoHab.puntos.find((p) => p.fecha === fecha);
@@ -432,7 +453,7 @@
         <div><strong>${personal !== null ? fmt(personal, 0) : "–"}</strong><span>empleados recomendados (ratio de la zona)</span></div>
       </div>
       <h3>Recomendaciones</h3>
-      <ul class="recomendaciones">${recomendaciones(nivel, precio, ref, fecha).map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`;
+      <ul class="recomendaciones">${recomendaciones(nivel, precio, ref, fecha, tipo).map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`;
   }
 
   // ---------- Datos ----------

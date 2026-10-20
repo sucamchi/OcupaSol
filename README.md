@@ -20,9 +20,9 @@ y en sus principales municipios, para ayudar a los hoteles a planificar personal
 | **1. Sector o industria** | Turismo / HORECA (hostelería) |
 | **2. Proceso a mejorar** | **Toma de decisiones** y **análisis de datos (predicciones)**. Hoy muchos hoteles planifican plantilla, tarifas y promociones "a ojo" o copiando el año anterior. La app anticipa la demanda de la zona para decidir con datos. |
 | **3. Fuentes de datos** | **Encuesta de Ocupación Hotelera (EOH) del INE**, datos oficiales mensuales y públicos:<br>• Tabla 2013: establecimientos, plazas, grados de ocupación y personal por **zonas turísticas**<br>• Tabla 2039: viajeros y pernoctaciones por **zonas turísticas**<br>• Tabla 2076: establecimientos, plazas, ocupación y personal por **puntos turísticos** (municipios)<br>• Tabla 2078: viajeros y pernoctaciones por **puntos turísticos**<br>• Tablas 46297 y 46298: tarifa media diaria (ADR) por zonas y puntos turísticos (desde 2021)<br>**Dataset creado:** `data/ocupacion_costa_del_sol.csv` con **2.035 registros mensuales** (1999–2026) de la Costa del Sol y 7 municipios (Málaga, Torremolinos, Benalmádena, Fuengirola, Marbella, Estepona y Nerja), 16 variables cada uno. |
-| **4. Usuario final** | **Empresas (B2B)**: directores de hotel, *revenue managers* y responsables de RR. HH. de hoteles de la Costa del Sol. Usuarios secundarios: analistas de turismo y administraciones públicas. |
+| **4. Usuario final** | **Pymes hoteleras (B2B)**: directores, *revenue managers* y responsables de RR. HH. de hoteles independientes de la Costa del Sol de hasta 150 habitaciones (boutique o rurales, urbanos o de playa independientes y vacacionales). Usuarios secundarios: analistas de turismo y administraciones públicas. |
 | **5. Capacidad de IA principal** | **Predicción (modelo supervisado)**: regresión lineal regularizada (ridge) entrenada con series temporales, que aprende cómo cambia la ocupación respecto al mismo mes del año anterior según la tendencia reciente. Se valida con *backtesting* frente a un modelo de referencia. |
-| **6. Tipo de interacción** | **Dashboard interactivo**, **formulario inteligente** y **sistema de recomendaciones**: el usuario elige zona y mes y mueve los controles de habitaciones (hasta 150, pensado para pymes) y precio de su hotel; recibe al momento la ocupación prevista, un intervalo de confianza, las habitaciones ocupadas, los ingresos del mes, el personal recomendado y consejos de precio y gestión. |
+| **6. Tipo de interacción** | **Dashboard interactivo**, **formulario inteligente** y **sistema de recomendaciones**: el usuario elige zona y mes y mueve los controles de habitaciones (hasta 150, pensado para pymes) y precio (hasta 400 €) de su hotel; recibe al momento el tipo de hotel, la ocupación prevista, un intervalo de confianza, las habitaciones ocupadas, los ingresos del mes, el personal recomendado y consejos de precio y gestión. |
 
 ### Problema que resuelve
 
@@ -121,6 +121,9 @@ Hay huecos puntuales (por ejemplo, abril–junio de 2020 por el cierre de la COV
   con una suposición simple (no aprendida de los datos): cobrar un 10 % más que la media llena un 10 % menos, y al revés.
 - **Precio orientativo:** parte de esa tarifa media de la zona (con la suposición anterior, es el precio con el que más ingresa cada habitación):
   un 10 % más si la demanda prevista es alta, la media si es media y un 10 % menos si es baja. No depende del precio que pongas; la app te dice cuánto te alejas de él.
+- **Tipo de hotel:** según las habitaciones, *boutique o rural* (hasta 40), *urbano o de playa independiente* (45–100) o *vacacional* (105–150).
+  Los cortes se apoyan en las habitaciones medias por hotel del INE en cada municipio (Nerja 37, Málaga 50, Marbella 73, Torremolinos 152, Benalmádena 211).
+  El tipo cambia las recomendaciones, no la predicción: el INE no publica la ocupación por tipo de hotel en la Costa del Sol.
 
 ## Seguridad y fiabilidad
 
