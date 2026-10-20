@@ -1,0 +1,11 @@
+Nuestro proyecto se orienta a pequeños hoteles, ya que las grandes cadenas usan datos internos del hotel y utilizan herramientas profesionales que por su precio quedan fuera del alcance de las pequeñas empresas.
+
+Por ello, hemos hecho una clasificación, que se refleja en la web:
+
+- Hoteles Boutique y rurales (son micro-pymes, cuentan con entre 5 y 25 habitaciones, y cuentan con personal mínimo y polivalente)
+
+- Hoteles Urbanos o de Playa Independientes (son pequeñas empresas, cuentan con entre 25 y 80 habitaciones y tienen una estructura de roles bien definidios y especializados por turnos: recepción de 24 horas, departamento de limpieza, personal de restauración y mantenimiento)
+
+- Hoteles Vacacionales (mediana empresa, de 80 a 150 habitaciones, tienen una estructura corporativa y operativa más compleja y cuentan con departamentos independientes y especializados debido al alto volumen de huéspedes simultáneos y la variedad de los servicios: animación, piscinas, restaurantes, limpieza, lavandería, etc)
+
+
